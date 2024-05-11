@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: const Color(0xFF979797).withOpacity(0.1),
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
@@ -99,8 +99,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               Text(dummyOrgs[index].name, style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic)),
                               IconButton(
-                                onPressed: (){
-                                  Navigator.pushNamed(context, '/org-details');
+                                onPressed: () async {
+                                  var res = await Navigator.pushNamed(context, '/org-details', arguments: dummyOrgs[index]);
+                                  ScaffoldMessenger.of(context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(SnackBar(content: Text(res as String)));
                                 }, 
                                 icon: const Icon(Icons.arrow_right),
                               )
