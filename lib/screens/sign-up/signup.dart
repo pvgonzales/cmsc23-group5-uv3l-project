@@ -36,6 +36,23 @@ class SignUpScreen extends StatelessWidget {
                     'By continuing, you confirm that you agree \nwith our Terms and Conditions',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Already have an account? ",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, '/sign-in'),
+                        child: const Text(
+                          "Sign In",
+                          style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 0, 97, 10)),
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),
