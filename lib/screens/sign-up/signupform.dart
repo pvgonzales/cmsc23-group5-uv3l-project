@@ -30,7 +30,7 @@ class _SignUpFormState extends State<SignUpForm> {
             },
             validator: (value) {
               if (value!.isEmpty) {
-                return "";
+                return "Please enter your email";
               } else if (!value.contains("@")) { // SUBJECT TO CHANGE
                 return "Please enter a valid email";
               }
@@ -92,7 +92,7 @@ class _SignUpFormState extends State<SignUpForm> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                Navigator.pushNamed(context, '/sign-in');
+                Navigator.pushNamed(context, '/complete-profile');
               }
             },
             child: const Text("Continue"),
