@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/model/donation_model.dart';
+import 'package:flutter_project/provider/donation_provider.dart';
+import 'package:provider/provider.dart';
 
 class DonorForm extends StatefulWidget {
   const DonorForm({super.key});
@@ -25,13 +28,12 @@ class _DonorFormFormState extends State<DonorForm> {
 
   Future<void> _selectDate() async {
     DateTime? pickDate = await showDatePicker(
-      context: context, 
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1999), 
-      lastDate: DateTime(2100)
-    );
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1999),
+        lastDate: DateTime(2100));
 
-    if(pickDate != null) {
+    if (pickDate != null) {
       setState(() {
         _dateValue.text = pickDate.toString().split(' ')[0];
       });
@@ -39,11 +41,9 @@ class _DonorFormFormState extends State<DonorForm> {
   }
 
   Future<void> _selectTime() async {
-    TimeOfDay? pickTime =  await showTimePicker(
-      context: context, 
-      initialTime: TimeOfDay.now()
-    );
-    if(pickTime != null){
+    TimeOfDay? pickTime =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    if (pickTime != null) {
       setState(() {
         _timeValue.text = pickTime.format(context).toString();
       });
@@ -57,16 +57,17 @@ class _DonorFormFormState extends State<DonorForm> {
       child: Column(
         children: [
           const Center(
-            child: Text('Donation Items', style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              height: 1.5,
-            )),
+            child: Text('Donation Items',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  height: 1.5,
+                )),
           ),
           CheckboxListTile(
             title: const Text('Food'),
-            value: food, 
+            value: food,
             onChanged: (newValue) {
               setState(() {
                 food = newValue;
@@ -78,7 +79,7 @@ class _DonorFormFormState extends State<DonorForm> {
           ),
           CheckboxListTile(
             title: const Text('Clothes'),
-            value: clothes, 
+            value: clothes,
             onChanged: (newValue) {
               setState(() {
                 clothes = newValue;
@@ -90,7 +91,7 @@ class _DonorFormFormState extends State<DonorForm> {
           ),
           CheckboxListTile(
             title: const Text('Cash'),
-            value: cash, 
+            value: cash,
             onChanged: (newValue) {
               setState(() {
                 cash = newValue;
@@ -102,7 +103,7 @@ class _DonorFormFormState extends State<DonorForm> {
           ),
           CheckboxListTile(
             title: const Text('Necessities'),
-            value: necessities, 
+            value: necessities,
             onChanged: (newValue) {
               setState(() {
                 necessities = newValue;
@@ -114,7 +115,7 @@ class _DonorFormFormState extends State<DonorForm> {
           ),
           CheckboxListTile(
             title: const Text('Others'),
-            value: others, 
+            value: others,
             onChanged: (newValue) {
               setState(() {
                 others = newValue;
@@ -125,37 +126,33 @@ class _DonorFormFormState extends State<DonorForm> {
             controlAffinity: ListTileControlAffinity.leading,
           ),
           const Center(
-            child: Text('Logistics', style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              height: 1.5,
-            )),
+            child: Text('Logistics',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  height: 1.5,
+                )),
           ),
           DropdownButton(
-            value: logistics,
-            items: const [
-              DropdownMenuItem<String>(
-                value: 'Pick up',
-                child: Text('Pick up')
+              value: logistics,
+              items: const [
+                DropdownMenuItem<String>(
+                    value: 'Pick up', child: Text('Pick up')),
+                DropdownMenuItem<String>(
+                    value: 'Drop-off', child: Text('Drop-off'))
+              ],
+              icon: const Icon(Icons.arrow_drop_down),
+              style: const TextStyle(color: Colors.black),
+              underline: Container(
+                color: Colors.white,
+                height: 2,
               ),
-              DropdownMenuItem<String>(
-                value: 'Drop-off',
-                child: Text('Drop-off')
-              )
-            ],
-            icon: const Icon(Icons.arrow_drop_down),
-            style: const TextStyle(color: Colors.black),
-            underline: Container(
-              color: Colors.white,
-              height: 2,
-            ),
-            onChanged: (String? newValue){
-              setState(() {
-                logistics = newValue!;
-              });
-            }
-          ),
+              onChanged: (String? newValue) {
+                setState(() {
+                  logistics = newValue!;
+                });
+              }),
           TextFormField(
             keyboardType: TextInputType.number,
             onSaved: (newValue) => weight = newValue,
@@ -185,18 +182,15 @@ class _DonorFormFormState extends State<DonorForm> {
               return null;
             },
             decoration: const InputDecoration(
-              labelText: 'Pick a date',
-              filled: true,
-              prefixIcon: Icon(Icons.calendar_today),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide.none
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromARGB(255, 112, 0, 0))
-              )
-            ),
+                labelText: 'Pick a date',
+                filled: true,
+                prefixIcon: Icon(Icons.calendar_today),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 112, 0, 0)))),
             readOnly: true,
-            onTap: (){
+            onTap: () {
               _selectDate();
             },
           ),
@@ -210,18 +204,15 @@ class _DonorFormFormState extends State<DonorForm> {
               return null;
             },
             decoration: const InputDecoration(
-              labelText: 'Pick time',
-              filled: true,
-              prefixIcon: Icon(Icons.calendar_today),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide.none
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromARGB(255, 112, 0, 0))
-              )
-            ),
+                labelText: 'Pick time',
+                filled: true,
+                prefixIcon: Icon(Icons.calendar_today),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 112, 0, 0)))),
             readOnly: true,
-            onTap: (){
+            onTap: () {
               _selectTime();
             },
           ),
@@ -231,53 +222,73 @@ class _DonorFormFormState extends State<DonorForm> {
             child: Text('INPUT FOR PICTURE/PROOF HERE'),
           ),
           const SizedBox(height: 20),
-          logistics == 'Pick up' ? Column(
-            children: [
-              TextFormField(
-                onSaved: (newValue) => address = newValue,
-                onChanged: (value) {
-                  return;
-                },
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Please enter your address";
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  labelText: "Address",
-                  hintText: "Enter your address",
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  suffixIcon: Icon(Icons.pin_drop)
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                keyboardType: TextInputType.phone,
-                onSaved: (newValue) => phoneNum = newValue,
-                onChanged: (value) {
-                  return;
-                },
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Please enter your phone number";
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  labelText: "Phone Number",
-                  hintText: "Enter your phone number",
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  suffixIcon: Icon(Icons.phone)
-                ),
-              ),
-            ],
-          ) : Container(),
+          logistics == 'Pick up'
+              ? Column(
+                  children: [
+                    TextFormField(
+                      onSaved: (newValue) => address = newValue,
+                      onChanged: (value) {
+                        return;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please enter your address";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          labelText: "Address",
+                          hintText: "Enter your address",
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          suffixIcon: Icon(Icons.pin_drop)),
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      keyboardType: TextInputType.phone,
+                      onSaved: (newValue) => phoneNum = newValue,
+                      onChanged: (value) {
+                        return;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please enter your phone number";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          labelText: "Phone Number",
+                          hintText: "Enter your phone number",
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          suffixIcon: Icon(Icons.phone)),
+                    ),
+                  ],
+                )
+              : Container(),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                Navigator.pop(context, 'Donation submitted! Kindly wait for approval.');
+                int newDonationId = DateTime.now().millisecondsSinceEpoch;
+                List<String> selectedItems = [];
+                if (food!) selectedItems.add('Food');
+                if (clothes!) selectedItems.add('Clothes');
+                if (cash!) selectedItems.add('Cash');
+                if (necessities!) selectedItems.add('Necessities');
+                if (others!) selectedItems.add('Others');
+                Donation newDonation = Donation(
+                  id: newDonationId,
+                  items: selectedItems,
+                  logistics: logistics,
+                  address: logistics == 'Pick up' ? address : null,
+                  phoneNum: logistics == 'Pick up' ? phoneNum : null,
+                  date: _dateValue.text,
+                  time: _timeValue.text,
+                );
+                var donationProvider =
+                    Provider.of<DonationProvider>(context, listen: false);
+                donationProvider.addDonation(newDonation);
+                Navigator.pop(
+                    context, 'Donation submitted! Kindly wait for approval.');
               }
             },
             child: const Text("Submit"),
