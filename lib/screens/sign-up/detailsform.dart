@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/model/user_model.dart';
+import 'package:provider/provider.dart';
 
 class DetailsForm extends StatefulWidget {
   const DetailsForm({super.key});
@@ -89,16 +91,24 @@ class _DetailsFormFormState extends State<DetailsForm> {
               return null;
             },
             decoration: const InputDecoration(
-              labelText: "Address",
-              hintText: "Enter your address",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: Icon(Icons.pin_drop)
-            ),
+                labelText: "Address",
+                hintText: "Enter your address",
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                suffixIcon: Icon(Icons.pin_drop)),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+                // Update user details using UserModel
+                Provider.of<UserModel>(context, listen: false)
+                    .updateUserDetails(
+                  fullname: fullname,
+                  username: username,
+                  phoneNumber: phoneNumber,
+                  address: address,
+                );
                 Navigator.pushNamed(context, '/sign-in');
               }
             },
