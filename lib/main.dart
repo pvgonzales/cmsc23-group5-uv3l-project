@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/model/user_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
@@ -13,7 +14,15 @@ import 'package:flutter_project/screens/sign-up/signup.dart';
 import 'package:flutter_project/screens/user_profile/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+// void main() {
+//   runApp(const MyApp());
+// }
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -27,6 +36,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<UserModel>(create: (context) => UserModel()),
           ChangeNotifierProvider<DonationProvider>(
               create: (context) => DonationProvider()),
+          ChangeNotifierProvider(create: (context) => UserAuthProvider(),)
         ],
         child: MaterialApp(
           title: 'Elbi Donation System',
@@ -56,8 +66,10 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) => const Placeholder());
             } else if (setting.name == '/complete-profile') {
+              var args = setting.arguments as Map<String, dynamic>;
               return MaterialPageRoute(
-                  builder: (context) => const CompleteDetailsScreen());
+                  builder: (context) => const CompleteDetailsScreen(),
+                  settings: RouteSettings(arguments: args));
             } else if (setting.name == '/user-profile') {
               return MaterialPageRoute(
                   builder: (context) => const ProfileScreen());
