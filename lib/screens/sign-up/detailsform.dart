@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/user_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class DetailsForm extends StatefulWidget {
@@ -19,6 +20,10 @@ class _DetailsFormFormState extends State<DetailsForm> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final email = arguments['email'] as String?;
+    final password = arguments['password'] as String?;
+
     return Form(
       key: _formKey,
       child: Column(
@@ -109,6 +114,10 @@ class _DetailsFormFormState extends State<DetailsForm> {
                   phoneNumber: phoneNumber,
                   address: address,
                 );
+                // store in firebase
+                context.read<UserAuthProvider>()
+                .authService
+                .signUp(fullname!, email!, username!, password!, phoneNumber!, address!);
                 Navigator.pushNamed(context, '/sign-in');
               }
             },

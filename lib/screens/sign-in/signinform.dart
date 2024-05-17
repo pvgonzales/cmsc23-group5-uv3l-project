@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -93,6 +95,9 @@ class _SignInFormState extends State<SignInForm> {
                 _formKey.currentState!.save();
                 Navigator.pushNamed(context, '/home');
               }
+              context.read<UserAuthProvider>()
+              .authService.
+              signIn(email!, password!);
             },
             child: const Text("Continue"),
           ),

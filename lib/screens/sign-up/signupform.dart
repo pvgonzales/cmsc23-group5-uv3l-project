@@ -92,7 +92,10 @@ class _SignUpFormState extends State<SignUpForm> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                Navigator.pushNamed(context, '/complete-profile');
+                Navigator.pushNamed(context, '/complete-profile', arguments: {
+                  'email': email,
+                  'password': password,
+                });
               }
             },
             child: const Text("Continue"),
