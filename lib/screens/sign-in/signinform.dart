@@ -90,14 +90,26 @@ class _SignInFormState extends State<SignInForm> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                Navigator.pushNamed(context, '/home');
+
+                String? message = await context
+                  .read<UserAuthProvider>()
+                  .authService
+                  .signIn(email!, password!);
+
+                if (message == "Success") {
+                  Navigator.pushNamed(context, '/home');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Invalid email or password"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
-              context.read<UserAuthProvider>()
-              .authService.
-              signIn(email!, password!);
             },
             child: const Text("Continue"),
           ),
