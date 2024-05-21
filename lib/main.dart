@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/model/user_model.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
@@ -76,6 +75,9 @@ class MyApp extends StatelessWidget {
             } else if (setting.name == '/donations') {
               return MaterialPageRoute(
                   builder: (context) => const DonationsScreen());
+            }else {
+              return MaterialPageRoute(
+                  builder: (context) => const Placeholder());
             }
           },
         ));
