@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
+import 'package:flutter_project/screens/donations/showqr.dart';
 import 'package:provider/provider.dart';
 
 class DonationsScreen extends StatelessWidget {
-  const DonationsScreen({Key? key}) : super(key: key);
+  const DonationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +16,12 @@ class DonationsScreen extends StatelessWidget {
       body: Consumer<DonationProvider>(
         builder: (context, donationProvider, _) {
           if (donationProvider.isLoading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
           if (donationProvider.donations.isEmpty) {
-            return Center(
+            return const Center(
               child: Text('No donations found.'),
             );
           }
@@ -29,23 +31,46 @@ class DonationsScreen extends StatelessWidget {
               var donation = donationProvider.donations[index];
               return ListTile(
                 title: Text('Donation ID: ${donation.id}'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Items: ${donation.items.join(', ')}'),
-                    Text('Logistics: ${donation.logistics}'),
-                    if (donation.address != null)
-                      Text('Address: ${donation.address}'),
-                    if (donation.phoneNum != null)
-                      Text('Phone Number: ${donation.phoneNum}'),
-                    Text('Date: ${donation.date}'),
-                    Text('Date: ${donation.time}'),
-                  ],
-                ),
+                subtitle: Text('Logistics: ${donation.logistics}'),
+                onTap: () {
+                  if (donation.logistics == 'Drop-off'){
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ShowQR(donation: donation)));
+                  }else{
+                    Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => ShowDetails(args: donation)));
+                  }
+                },
               );
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class ShowDetails extends StatelessWidget {
+  final Donation args;
+  const ShowDetails({super.key, required this.args});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${args.id}'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Text('Items: ${args.items.join(', ')}'),
+            Text('Logistics: ${args.logistics}'),
+            Text('Address: ${args.address}'),
+            Text('Phone Number: ${args.phoneNum}'),
+            Text('Date: ${args.date}'),
+            Text('Time: ${args.time}'),
+          ],
+        )
       ),
     );
   }
