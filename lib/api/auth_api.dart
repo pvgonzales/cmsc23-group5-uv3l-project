@@ -47,6 +47,7 @@ class FirebaseAuthApi {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
       await FirebaseFirestore.instance.collection("users").doc(userCredential.user!.uid).set({
+        "uid": userCredential.user!.uid,
         "fullName": fullName,
         "email": email,
         "username": username,
