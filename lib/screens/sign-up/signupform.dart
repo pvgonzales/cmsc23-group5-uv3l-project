@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -15,6 +17,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
+    final userAuthProvider = Provider.of<UserAuthProvider>(context);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -89,13 +93,24 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                Navigator.pushNamed(context, '/complete-profile', arguments: {
-                  'email': email,
-                  'password': password,
-                });
+
+                bool emailExists = await userAuthProvider.isEmailAlreadyInUse(email!);
+                if (emailExists) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Email is already in use"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  Navigator.pushNamed(context, '/complete-profile', arguments: {
+                    'email': email,
+                    'password': password,
+                  });
+                }
               }
             },
             child: const Text("Continue"),
