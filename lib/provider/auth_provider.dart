@@ -24,4 +24,12 @@ class UserAuthProvider with ChangeNotifier {
     await authService.signOut();
   }
 
+  Future<bool> isEmailAlreadyInUse(String email) async {
+    return await authService.isEmailAlreadyInUse(email);
+  }
+
+  Future<bool> isUsernameAlreadyInUse(String username) async {
+    return await authService.isUsernameAlreadyInUse(username);
+  }
+
 }

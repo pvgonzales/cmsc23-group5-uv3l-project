@@ -16,6 +16,33 @@ class FirebaseAuthApi {
     return auth.currentUser;
   }
 
+  Future<bool> isEmailAlreadyInUse(String email) async {
+    try {
+      await auth.signInWithEmailAndPassword(email: email, password: 'password');
+      return true;
+    } on FirebaseAuthException catch(e) {
+      if (e.code == 'user-not-found') {
+        return false;
+      }
+      return false;
+    }
+  }
+
+  Future<bool> isUsernameAlreadyInUse(String username) async {
+    try {
+      QuerySnapshot query = await FirebaseFirestore.instance
+        .collection("users")
+        .where("username", isEqualTo: username)
+        .get();
+      if (query.docs.isNotEmpty) {
+        return true;
+      }
+      return false;
+    } catch(e) {
+      return false;
+    }
+  }
+
   Future<String> signUp(String fullName, String email, String username, String password, String contactNumber, String address) async {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);

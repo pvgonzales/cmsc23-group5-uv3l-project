@@ -24,6 +24,8 @@ class _DetailsFormFormState extends State<DetailsForm> {
     final email = arguments['email'] as String?;
     final password = arguments['password'] as String?;
 
+    final userAuthProvider = Provider.of<UserAuthProvider>(context);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -103,22 +105,34 @@ class _DetailsFormFormState extends State<DetailsForm> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                // Update user details using UserModel
-                Provider.of<UserModel>(context, listen: false)
-                    .updateUserDetails(
-                  fullname: fullname,
-                  username: username,
-                  phoneNumber: phoneNumber,
-                  address: address,
-                );
-                // store in firebase
-                context.read<UserAuthProvider>()
-                .authService
-                .signUp(fullname!, email!, username!, password!, phoneNumber!, address!);
-                Navigator.pushNamed(context, '/sign-in');
+
+                bool usernameExists = await userAuthProvider.isUsernameAlreadyInUse(username!);
+                if (usernameExists) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Username already exists"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                } else {
+                  // Update user details using UserModel
+                  Provider.of<UserModel>(context, listen: false)
+                      .updateUserDetails(
+                    fullname: fullname,
+                    username: username,
+                    phoneNumber: phoneNumber,
+                    address: address,
+                  );
+                  // store in firebase
+                  context.read<UserAuthProvider>()
+                  .authService
+                  .signUp(fullname!, email!, username!, password!, phoneNumber!, address!);
+                  Navigator.pushNamed(context, '/sign-in');
+                }
               }
             },
             child: const Text("Continue"),
