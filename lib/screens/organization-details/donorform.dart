@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DonorForm extends StatefulWidget {
   const DonorForm({super.key});
@@ -25,12 +28,13 @@ class _DonorFormFormState extends State<DonorForm> {
 
   final TextEditingController _dateValue = TextEditingController();
   final TextEditingController _timeValue = TextEditingController();
+  XFile? _imageFile;
 
   Future<void> _selectDate() async {
     DateTime? pickDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1999),
+        initialDate: DateTime.now().add(const Duration(days: 1)),
+        firstDate: DateTime.now(),
         lastDate: DateTime(2100));
 
     if (pickDate != null) {
@@ -42,11 +46,28 @@ class _DonorFormFormState extends State<DonorForm> {
 
   Future<void> _selectTime() async {
     TimeOfDay? pickTime =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+        await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 8, minute: 0));
     if (pickTime != null) {
       setState(() {
         _timeValue.text = pickTime.format(context).toString();
       });
+    }
+  }
+
+    Future<void> _pickImage() async {
+    final PermissionStatus status = await Permission.camera.request();
+    if (status == PermissionStatus.granted) {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        setState(() {
+          _imageFile = image;
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Camera permission denied')),
+      );
     }
   }
 
@@ -217,11 +238,20 @@ class _DonorFormFormState extends State<DonorForm> {
             },
           ),
           const SizedBox(height: 20),
-          const Padding(
-            padding: EdgeInsets.all(10),
-            child: Text('INPUT FOR PICTURE/PROOF HERE'),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: IconButton(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.camera_alt)
+              ),
           ),
+          const Text('Upload Photo Proof'),
           const SizedBox(height: 20),
+          _imageFile != null ? 
+              Image.file(
+                File(_imageFile!.path),
+                height: 200,
+              ) : const SizedBox(height: 20),
           logistics == 'Pick up'
               ? Column(
                   children: [
@@ -283,6 +313,8 @@ class _DonorFormFormState extends State<DonorForm> {
                   phoneNum: logistics == 'Pick up' ? phoneNum : null,
                   date: _dateValue.text,
                   time: _timeValue.text,
+                  proof: _imageFile,
+                  status: "Pending"
                 );
                 var donationProvider =
                     Provider.of<DonationProvider>(context, listen: false);
