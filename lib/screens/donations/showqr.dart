@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
@@ -41,6 +42,12 @@ class ShowQR extends StatelessWidget {
                 Text('Logistics: ${donation.logistics}'),
                 Text('Date: ${donation.date}'),
                 Text('Time: ${donation.time}'),
+                donation.proof != null ?
+                Image.file(
+                  File(donation.proof!.path),
+                  height: 200,
+                ) : Container(),
+                Text('Status: ${donation.status}')
               ],
             ),
             Screenshot(

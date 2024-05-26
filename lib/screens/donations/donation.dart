@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
@@ -69,6 +70,12 @@ class ShowDetails extends StatelessWidget {
             Text('Phone Number: ${args.phoneNum}'),
             Text('Date: ${args.date}'),
             Text('Time: ${args.time}'),
+            args.proof != null ?
+            Image.file(
+                File(args.proof!.path),
+                height: 200,
+            ) : Container(),
+            Text('Status: ${args.status}')
           ],
         )
       ),
