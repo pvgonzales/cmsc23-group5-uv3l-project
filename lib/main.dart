@@ -3,9 +3,12 @@ import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/model/user_model.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
+import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
 import 'package:flutter_project/screens/intro-screen/intro.dart';
+import 'package:flutter_project/screens/organization%20view/donations.dart';
+import 'package:flutter_project/screens/organization%20view/homepage.dart';
 import 'package:flutter_project/screens/organization-details/orgdetails.dart';
 import 'package:flutter_project/screens/sign-in/signin.dart';
 import 'package:flutter_project/screens/sign-up/completedetails.dart';
@@ -35,7 +38,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<UserModel>(create: (context) => UserModel()),
           ChangeNotifierProvider<DonationProvider>(
               create: (context) => DonationProvider()),
-          ChangeNotifierProvider(create: (context) => UserAuthProvider(),)
+          ChangeNotifierProvider(create: (context) => UserAuthProvider(),),
+          ChangeNotifierProvider(create: (context) => OrganizationProvider())
         ],
         child: MaterialApp(
           title: 'Elbi Donation System',
@@ -75,6 +79,12 @@ class MyApp extends StatelessWidget {
             } else if (setting.name == '/donations') {
               return MaterialPageRoute(
                   builder: (context) => const DonationsScreen());
+            }else if (setting.name == '/org-home-page') {
+              return MaterialPageRoute(
+                  builder: (context) => const HomeScreenOrg());
+            }else if (setting.name == '/list-donations') {
+              return MaterialPageRoute(
+                  builder: (context) => const DonationListOrg());
             }else {
               return MaterialPageRoute(
                   builder: (context) => const Placeholder());
