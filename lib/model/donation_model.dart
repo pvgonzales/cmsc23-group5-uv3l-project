@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Donation {
   final int id;
@@ -8,6 +8,8 @@ class Donation {
   final String? phoneNum;
   final String? date;
   final String? time;
+  final XFile? proof;
+  String? status;
 
   Donation({
     required this.id,
@@ -17,5 +19,7 @@ class Donation {
     this.phoneNum,
     required this.date,
     required this.time,
+    this.proof,
+    required this.status
   });
 }
