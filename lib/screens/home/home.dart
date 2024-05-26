@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/org_model.dart';
+import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:flutter_project/screens/home/categories.dart';
 import 'package:flutter_project/screens/home/drawer.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,11 +15,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    List<Organizations> orgdrivesItems = context.read<OrganizationProvider>().orgdrives;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: const Text("Home"),
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -86,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const OrgCategories(),
                   Expanded(
                     child: ListView.builder(
-                        itemCount: dummyOrgs.length,
+                        itemCount: orgdrivesItems.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(10),
@@ -102,9 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      child: Image.asset(dummyOrgs[index].image,
+                                      child: Image.asset(orgdrivesItems[index].image!,
                                           width: 100, height: 100)),
-                                  Text(dummyOrgs[index].name,
+                                  Text(orgdrivesItems[index].name,
                                       style: const TextStyle(
                                           fontSize: 14,
                                           fontStyle: FontStyle.italic)),
@@ -112,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     onPressed: () async {
                                       var res = await Navigator.pushNamed(
                                           context, '/org-details',
-                                          arguments: dummyOrgs[index]);
+                                          arguments: orgdrivesItems[index]);
                                       ScaffoldMessenger.of(context)
                                         ..removeCurrentSnackBar()
                                         ..showSnackBar(SnackBar(
