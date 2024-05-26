@@ -120,13 +120,13 @@ class _DetailsFormFormState extends State<DetailsForm> {
                   return;
                 } else {
                   // Update user details using UserModel
-                  Provider.of<UserModel>(context, listen: false)
-                      .updateUserDetails(
-                    fullname: fullname,
-                    username: username,
-                    phoneNumber: phoneNumber,
-                    address: address,
-                  );
+                  // Provider.of<UserModel>(context, listen: false)
+                  //     .updateUserDetails(
+                  //   fullname: fullname,
+                  //   username: username,
+                  //   phoneNumber: phoneNumber,
+                  //   address: address,
+                  // );
                   // store in firebase
                   context.read<UserAuthProvider>()
                   .authService
