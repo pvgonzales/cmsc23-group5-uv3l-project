@@ -3,8 +3,8 @@ import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/screens/organization-details/donorform.dart';
 
 class OrgDonation extends StatefulWidget {
-  Organizations? org;
-  OrgDonation({super.key, this.org});
+  final Organizations? org;
+  const OrgDonation({super.key, this.org});
 
   @override
   State<OrgDonation> createState() => _OrgDonationState();
