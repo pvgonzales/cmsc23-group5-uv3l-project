@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
-import 'package:flutter_project/screens/organization%20view/modal.dart';
-import 'package:flutter_project/screens/organization%20view/orgprofile.dart';
+import 'package:flutter_project/screens/organization-view/modal.dart';
+import 'package:flutter_project/screens/organization-view/orgprofile.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreenOrg extends StatefulWidget {
