@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/sign-in/signinform.dart';
 
 class SignInScreen extends StatelessWidget {
+  const SignInScreen({Key? key}) : super(key: key);
 
-  const SignInScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +32,34 @@ class SignInScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  const SignInForm(),
+                  const SignInForm(destinationRoute: '/home'),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          // Navigate to admin login screen
+                          Navigator.pushNamed(context, '/admin-login');
+                        },
+                        child: const Text(
+                          "Admin",
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      TextButton(
+                        onPressed: () {
+                          // Navigate to organization login screen
+                          Navigator.pushNamed(context, '/org-login');
+                        },
+                        child: const Text(
+                          "Organization",
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -45,7 +72,9 @@ class SignInScreen extends StatelessWidget {
                         onTap: () => Navigator.pushNamed(context, '/sign-up'),
                         child: const Text(
                           "Sign Up",
-                          style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 0, 97, 10)),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 0, 97, 10)),
                         ),
                       ),
                     ],

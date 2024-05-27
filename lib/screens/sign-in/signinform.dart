@@ -3,7 +3,10 @@ import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class SignInForm extends StatefulWidget {
-  const SignInForm({super.key});
+  final String destinationRoute;
+
+  const SignInForm({Key? key, required this.destinationRoute})
+      : super(key: key);
 
   @override
   _SignInFormState createState() => _SignInFormState();
@@ -30,19 +33,19 @@ class _SignInFormState extends State<SignInForm> {
             validator: (value) {
               if (value!.isEmpty) {
                 return "Please enter your email";
-              } else if (!value.contains('@')) { //SUBJECT TO CHANGE
+              } else if (!value.contains('@')) {
+                //SUBJECT TO CHANGE
                 return "Please enter a valid email";
               }
               return null;
             },
             decoration: const InputDecoration(
-              labelText: "Email",
-              hintText: "Enter your email",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: Icon(Icons.email)
-              ),
-            ),
-            const SizedBox(height: 20),
+                labelText: "Email",
+                hintText: "Enter your email",
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                suffixIcon: Icon(Icons.email)),
+          ),
+          const SizedBox(height: 20),
           TextFormField(
             obscureText: true,
             onSaved: (newValue) => password = newValue,
@@ -71,7 +74,7 @@ class _SignInFormState extends State<SignInForm> {
                 value: remember,
                 activeColor: const Color.fromARGB(255, 0, 97, 10),
                 onChanged: (value) {
-                  // ADD USER AUTH FUNCTIONALITIES HERE 
+                  // ADD USER AUTH FUNCTIONALITIES HERE
                   setState(() {
                     remember = value;
                   });
@@ -95,13 +98,15 @@ class _SignInFormState extends State<SignInForm> {
                 _formKey.currentState!.save();
 
                 String? message = await context
-                  .read<UserAuthProvider>()
-                  .authService
-                  .signIn(email!, password!);
+                    .read<UserAuthProvider>()
+                    .authService
+                    .signIn(email!, password!);
 
                 if (message == "Success") {
-                  Navigator.pushNamed(context, '/org-home-page');
-                  // Navigator.pushNamed(context, '/home');
+                  Navigator.pushReplacementNamed(
+                      context,
+                      widget
+                          .destinationRoute); // Navigate to the specified destination
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

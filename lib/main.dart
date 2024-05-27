@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/model/user_model.dart';
+import 'package:flutter_project/provider/admin_provider.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
+import 'package:flutter_project/screens/admin-view/admin-home.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
 import 'package:flutter_project/screens/intro-screen/intro.dart';
 import 'package:flutter_project/screens/organization-view/donations.dart';
 import 'package:flutter_project/screens/organization-view/homepage.dart';
 import 'package:flutter_project/screens/organization-details/orgdetails.dart';
+import 'package:flutter_project/screens/organization-view/orgprofile.dart';
+import 'package:flutter_project/screens/sign-in/admin-login.dart';
+import 'package:flutter_project/screens/sign-in/org-login.dart';
 import 'package:flutter_project/screens/sign-in/signin.dart';
 import 'package:flutter_project/screens/sign-up/completedetails.dart';
+import 'package:flutter_project/screens/sign-up/org-signup.dart';
 import 'package:flutter_project/screens/sign-up/signup.dart';
 import 'package:flutter_project/screens/user_profile/user_profile_screen.dart';
 import 'package:provider/provider.dart';
@@ -38,8 +44,16 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<UserModel>(create: (context) => UserModel()),
           ChangeNotifierProvider<DonationProvider>(
               create: (context) => DonationProvider()),
-          ChangeNotifierProvider(create: (context) => UserAuthProvider(),),
-          ChangeNotifierProvider(create: (context) => OrganizationProvider())
+          ChangeNotifierProvider(
+            create: (context) => UserAuthProvider(),
+          ),
+          ChangeNotifierProvider(create: (context) => OrganizationProvider()),
+          ChangeNotifierProvider(
+            create: (_) => AdminProvider(
+              Provider.of<OrganizationProvider>(context, listen: false),
+              Provider.of<DonationProvider>(context, listen: false),
+            ),
+          ),
         ],
         child: MaterialApp(
           title: 'Elbi Donation System',
@@ -79,13 +93,25 @@ class MyApp extends StatelessWidget {
             } else if (setting.name == '/donations') {
               return MaterialPageRoute(
                   builder: (context) => const DonationsScreen());
-            }else if (setting.name == '/org-home-page') {
+            } else if (setting.name == '/org-home-page') {
               return MaterialPageRoute(
                   builder: (context) => const HomeScreenOrg());
-            }else if (setting.name == '/list-donations') {
+            } else if (setting.name == '/list-donations') {
               return MaterialPageRoute(
                   builder: (context) => const DonationListOrg());
-            }else {
+            } else if (setting.name == '/admin') {
+              return MaterialPageRoute(builder: (context) => AdminScreen());
+            } else if (setting.name == '/admin-login') {
+              return MaterialPageRoute(
+                  builder: (context) => const AdminLoginScreen());
+            } else if (setting.name == '/org-login') {
+              return MaterialPageRoute(
+                  builder: (context) => const OrgLoginScreen());
+            } else if (setting.name == '/org-signup') {
+              return MaterialPageRoute(builder: (context) => OrgSignUpScreen());
+            } else if (setting.name == '/org-profile') {
+              return MaterialPageRoute(builder: (context) => OrgProfile());
+            } else {
               return MaterialPageRoute(
                   builder: (context) => const Placeholder());
             }
