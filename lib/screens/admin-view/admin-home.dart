@@ -6,6 +6,8 @@ import 'package:flutter_project/provider/admin_provider.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
+import 'package:flutter_project/screens/admin-view/admin-donation.dart';
+import 'package:flutter_project/screens/admin-view/navbar.dart';
 import 'package:provider/provider.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -91,50 +93,7 @@ class _AdminScreenState extends State<AdminScreen> {
         ),
       ),
       // Donations Tab
-      SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Donations",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Builder(
-              builder: (context) {
-                final donationProvider =
-                    Provider.of<DonationProvider>(context, listen: false);
-                final List<Donation> donations = donationProvider.donations;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: donations.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text('Donation ${donations[index].id}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Items: ${donations[index].items.join(', ')}'),
-                          Text('Logistics: ${donations[index].logistics}'),
-                          if (donations[index].address != null)
-                            Text('Address: ${donations[index].address}'),
-                          if (donations[index].phoneNum != null)
-                            Text('Phone: ${donations[index].phoneNum}'),
-                          Text('Date: ${donations[index].date}'),
-                          Text('Time: ${donations[index].time}'),
-                          Text('Status: ${donations[index].status}'),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+      DonationScreenAdmin(),
       // Donors Tab
       SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -257,26 +216,9 @@ class _AdminScreenState extends State<AdminScreen> {
         ),
       ),
       body: _tabs[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF212738),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Organizations',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Donations',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Donors',
-          ),
-        ],
+      bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 243, 164, 160),
         onTap: _onItemTapped,
-        unselectedItemColor: Colors.white,
       ),
     );
   }

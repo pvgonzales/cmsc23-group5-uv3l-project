@@ -5,6 +5,7 @@ import 'package:flutter_project/provider/admin_provider.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
+import 'package:flutter_project/screens/admin-view/admin-donation.dart';
 import 'package:flutter_project/screens/admin-view/admin-home.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
@@ -112,6 +113,9 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(builder: (context) => OrgSignUpScreen());
             } else if (setting.name == '/org-profile') {
               return MaterialPageRoute(builder: (context) => OrgProfile());
+            } else if (setting.name == '/admin-donation') {
+              return MaterialPageRoute(
+                  builder: (context) => DonationScreenAdmin());
             } else {
               return MaterialPageRoute(
                   builder: (context) => const Placeholder());
