@@ -117,7 +117,6 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
           borderRadius: BorderRadius.circular(20.0),
         ),
       ),
-      drawer: drawer,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 16),
