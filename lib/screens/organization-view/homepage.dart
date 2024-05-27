@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/api/auth_api.dart';
 import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:flutter_project/screens/organization-view/modal.dart';
@@ -34,6 +35,7 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
       }
     });
   }
+  final FirebaseAuthApi authApi = FirebaseAuthApi();
 
   @override
   Widget build(BuildContext context) {
