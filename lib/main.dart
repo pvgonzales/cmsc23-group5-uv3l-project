@@ -62,6 +62,7 @@ class MyApp extends StatelessWidget {
                 seedColor: const Color.fromARGB(255, 0, 97, 10)),
             useMaterial3: true,
           ),
+          initialRoute: '/admin',
           onGenerateRoute: (setting) {
             if (setting.name == '/') {
               return MaterialPageRoute(
