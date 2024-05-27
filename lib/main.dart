@@ -6,6 +6,7 @@ import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:flutter_project/screens/admin-view/admin-donation.dart';
+import 'package:flutter_project/screens/admin-view/admin-donors.dart';
 import 'package:flutter_project/screens/admin-view/admin-home.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
@@ -59,8 +60,6 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Elbi Donation System',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color.fromARGB(255, 0, 97, 10)),
             useMaterial3: true,
           ),
           initialRoute: '/admin',
@@ -116,6 +115,8 @@ class MyApp extends StatelessWidget {
             } else if (setting.name == '/admin-donation') {
               return MaterialPageRoute(
                   builder: (context) => DonationScreenAdmin());
+            } else if (setting.name == '/admin-donors') {
+              return MaterialPageRoute(builder: (context) => DonorsScreen());
             } else {
               return MaterialPageRoute(
                   builder: (context) => const Placeholder());

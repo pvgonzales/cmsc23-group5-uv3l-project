@@ -77,18 +77,27 @@ class _DonationScreenAdminState extends State<DonationScreenAdmin> {
                                 ),
                               ],
                             ),
-                            Column(
-                              children: [
-                                Text(
-                                  '${donations[index].status}',
-                                  style: TextStyle(
-                                      fontFamily: "MyFont1",
-                                      color: Color(0xFF212738),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic),
+                            Flexible(
+                              child: Container(
+                                width: 80, // Adjust the width as needed
+                                alignment: Alignment.center,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${donations[index].status}',
+                                      style: TextStyle(
+                                        fontFamily: "MyFont1",
+                                        color: Color(0xFF212738),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 11,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             )
                           ],
                         ),

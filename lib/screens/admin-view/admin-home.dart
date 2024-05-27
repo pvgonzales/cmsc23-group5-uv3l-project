@@ -7,6 +7,7 @@ import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:flutter_project/screens/admin-view/admin-donation.dart';
+import 'package:flutter_project/screens/admin-view/admin-donors.dart';
 import 'package:flutter_project/screens/admin-view/navbar.dart';
 import 'package:provider/provider.dart';
 
@@ -94,45 +95,7 @@ class _AdminScreenState extends State<AdminScreen> {
       ),
       // Donations Tab
       DonationScreenAdmin(),
-      // Donors Tab
-      SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Donors",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Builder(
-              builder: (context) {
-                final userProvider = Provider.of<UserAuthProvider>(context,
-                    listen: true); // Listen to changes in users list
-                final List<UserModel> donors = userProvider.users;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: donors.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text('Donor ${donors[index].username}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Full Name: ${donors[index].fullname}'),
-                          Text('Phone: ${donors[index].phoneNumber}'),
-                          Text('Address: ${donors[index].address}'),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+      DonorsScreen(), // Donors Tab
     ];
 
     return Scaffold(
@@ -179,6 +142,16 @@ class _AdminScreenState extends State<AdminScreen> {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(
+                  width: 60,
+                ),
+                IconButton(
+                  icon: Icon(Icons.logout),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/");
+                  },
                 ),
               ],
             ),
