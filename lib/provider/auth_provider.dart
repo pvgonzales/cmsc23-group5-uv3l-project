@@ -9,10 +9,13 @@ class UserAuthProvider with ChangeNotifier {
   late FirebaseAuthApi authService;
   late Stream<User?> _userStream;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<UserModel> _users = [];
+
+  List<UserModel> get users => _users;
 
   Stream<User?> get userStream => _userStream;
   User? get user => authService.getUser();
-  
+
   // Class constructor
   UserAuthProvider() {
     // TODO init _userStream
@@ -50,4 +53,27 @@ class UserAuthProvider with ChangeNotifier {
     return await authService.isUsernameAlreadyInUse(username);
   }
 
+  Future<void> fetchAllUsers() async {
+    try {
+      final usersSnapshot = await _firestore.collection("users").get();
+      _users.clear(); // Clear the existing list before adding new users
+      usersSnapshot.docs.forEach((userDoc) {
+        final userData = userDoc.data();
+        if (userData != null) {
+          UserModel user = UserModel();
+          user.updateUserDetails(
+            uid: userDoc.id,
+            fullname: userData["fullName"],
+            username: userData["username"],
+            phoneNumber: userData["contact"],
+            address: userData["address"],
+          );
+          _users.add(user); // Add the user to the list
+        }
+      });
+      notifyListeners();
+    } catch (error) {
+      print("Error fetching users: $error");
+    }
+  }
 }

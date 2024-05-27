@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/user_profile/user_profile_screen.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -33,6 +35,13 @@ class AppDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (context) => ProfileScreen()),
               );
+            },
+          ),
+          ListTile(
+            title: Text('Logout'),
+            onTap: () {
+              context.read<UserAuthProvider>().authService.signOut();
+              Navigator.pushReplacementNamed(context, '/');
             },
           ),
         ],

@@ -6,14 +6,12 @@ import 'package:flutter_project/screens/donations/showqr.dart';
 import 'package:provider/provider.dart';
 
 class DonationsScreen extends StatelessWidget {
-  const DonationsScreen({super.key});
+  const DonationsScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Donations'),
-      ),
+      backgroundColor: Color(0xfff4f6ff),
       body: Consumer<DonationProvider>(
         builder: (context, donationProvider, _) {
           if (donationProvider.isLoading) {
@@ -26,23 +24,17 @@ class DonationsScreen extends StatelessWidget {
               child: Text('No donations found.'),
             );
           }
-          return ListView.builder(
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 4.0,
+              mainAxisSpacing: 4.0,
+              childAspectRatio: 0.85, // Aspect ratio for square cards
+            ),
             itemCount: donationProvider.donations.length,
             itemBuilder: (context, index) {
               var donation = donationProvider.donations[index];
-              return ListTile(
-                title: Text('Donation ID: ${donation.id}'),
-                subtitle: Text('Logistics: ${donation.logistics}'),
-                onTap: () {
-                  if (donation.logistics == 'Drop-off'){
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ShowQR(donation: donation)));
-                  }else{
-                    Navigator.push(context, 
-                      MaterialPageRoute(builder: (context) => ShowDetails(args: donation)));
-                  }
-                },
-              );
+              return DonationCard(donation: donation);
             },
           );
         },
@@ -51,33 +43,252 @@ class DonationsScreen extends StatelessWidget {
   }
 }
 
-class ShowDetails extends StatelessWidget {
-  final Donation args;
-  const ShowDetails({super.key, required this.args});
+class DonationCard extends StatelessWidget {
+  final Donation donation;
+  const DonationCard({Key? key, required this.donation}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${args.id}'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Text('Items: ${args.items.join(', ')}'),
-            Text('Logistics: ${args.logistics}'),
-            Text('Address: ${args.address}'),
-            Text('Phone Number: ${args.phoneNum}'),
-            Text('Date: ${args.date}'),
-            Text('Time: ${args.time}'),
-            args.proof != null ?
-            Image.file(
-                File(args.proof!.path),
-                height: 200,
-            ) : Container(),
-            Text('Status: ${args.status}')
-          ],
-        )
+    final TextStyle labelTextStyle = TextStyle(
+        fontFamily: "MyFont1",
+        color: Color(0xFF212738),
+        fontWeight: FontWeight.w600,
+        fontSize: 12);
+
+    final TextStyle valueTextStyle = TextStyle(
+        fontFamily: "MyFont1",
+        color: Color(0xFF212738),
+        fontWeight: FontWeight.w300,
+        fontSize: 12);
+
+    return Container(
+      child: Card(
+        color: Color(0xFF212738),
+        elevation: 7,
+        margin: EdgeInsets.symmetric(
+          vertical: 7,
+          horizontal: 7,
+        ),
+        child: InkWell(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: Colors.white,
+                  contentPadding: EdgeInsets.only(
+                      left: 26.0, right: 25, top: 20, bottom: 20),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.thumb_up,
+                            size: 48,
+                            color: Color(0xFF212738),
+                          ),
+                          SizedBox(height: 0),
+                          Text(
+                            'Thank You!',
+                            style: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Color(0xFF212738),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Color(
+                              0xFF212738), // Add your desired background color here
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Text(
+                          'Donation id: ${donation.id}',
+                          style: TextStyle(
+                            fontFamily: "MyFont1",
+                            color: Colors.white, // Adjust text color as needed
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Items:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.items.join(', ')}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Logistics:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.logistics}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Address:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.address}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Phone Number:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.phoneNum}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Date:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.date}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Time:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.time}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
+                      if (donation.proof != null)
+                        Image.file(
+                          File(donation.proof!.path),
+                          height: 200,
+                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Status:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.status}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 0,
+                      )
+                    ],
+                  ),
+                  actions: [
+                    Center(
+                      child: Container(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'Close',
+                            style: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Color(
+                                  0xFF212738), // Adjust text color as needed
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              },
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.asset(
+                      'assets/images/org1.jpg',
+                      height: 100,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Text(
+                  'Donation ID: ${donation.id}',
+                  style: TextStyle(
+                    fontFamily: "MyFont1",
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'For ${donation.logistics}',
+                  style: TextStyle(
+                    fontFamily: "MyFont1",
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

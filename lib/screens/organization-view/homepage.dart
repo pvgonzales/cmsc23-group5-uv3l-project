@@ -14,135 +14,231 @@ class HomeScreenOrg extends StatefulWidget {
 }
 
 class _HomeScreenOrgState extends State<HomeScreenOrg> {
+  final TextEditingController _searchController = TextEditingController();
+
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      switch (index) {
+        case 0:
+          Navigator.pushNamed(context, '/org-home-page');
+          break;
+        case 1:
+          Navigator.pushNamed(context, '/org-profile');
+
+          break;
+        case 2:
+          Navigator.pushNamed(context, '/');
+          break;
+      }
+    });
+  }
   final FirebaseAuthApi authApi = FirebaseAuthApi();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
-      ),
-      drawer: drawer,
-      body: SafeArea(
-        child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.all(20),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          const Color.fromARGB(255, 0, 97, 10).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text.rich(
-                      TextSpan(
-                        style: TextStyle(color: Color.fromARGB(255, 0, 38, 23)),
-                        children: [
-                          TextSpan(text: "Empower Change:\n"),
-                          TextSpan(
-                            text: "Be the Catalyst in Someone's Life!",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+        backgroundColor: Color(0xFF212738),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                ),
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: AssetImage(
+                      "assets/images/orglogo2.png"), // Replace with your image path
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Hello there,",
+                      style: TextStyle(
+                        fontFamily: "MyFont1",
+                        color: Color.fromARGB(255, 248, 249, 252),
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
                       ),
                     ),
+                    SizedBox(height: 0), // Adjust the spacing here
+                    Text(
+                      "Org Name",
+                      style: TextStyle(
+                        fontFamily: "MyFont1",
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Center(
+              // Centering the search bar
+              child: Container(
+                // Wrapping with a container to control width
+                width: MediaQuery.of(context).size.width *
+                    0.8, // Adjust width as needed
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 5.0),
+                    hintText: 'Search donations...',
+                    hintStyle: TextStyle(
+                      fontFamily: "MyFont1",
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    prefixIcon: Icon(Icons.search),
                   ),
-                  Expanded(
-                    child: Consumer<OrganizationProvider>(
-                      builder: (context, provider, child) {
-                        List<Organizations> orgdrivesItems = provider.orgdrives;
-                        return ListView.builder(
-                          itemCount: orgdrivesItems.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(orgdrivesItems[index].name),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) => DriveModal(
-                                            type: 'Edit',
-                                            index: index,
-                                            //id: userid,
-                                          ),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.create_outlined),
-                                    ),
-                                  IconButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) => DriveModal(
-                                          type: 'Delete',
-                                          index: index
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(Icons.delete_outlined),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, '/list-donations');
-                                    },
-                                    icon: const Icon(Icons.remove_red_eye),
-                                  ),
-                                ],
-                              ),
-                            );
-                          });
-                      }
-                    )
-                  )
-                ],
+                ),
               ),
-            )),
+            ),
+          ],
+        ),
+        toolbarHeight: 190,
+        automaticallyImplyLeading: false,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(82, 255, 207, 205),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text.rich(
+                  TextSpan(
+                    style: TextStyle(
+                      color: Color(0xFF212738),
+                      fontFamily: "MyFont1",
+                    ),
+                    children: [
+                      TextSpan(text: "Empower Change:\n"),
+                      TextSpan(
+                        text: "Be the Catalyst in Someone's Life!",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "MyFont1",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Consumer<OrganizationProvider>(
+                builder: (context, provider, child) {
+                  List<Organizations> orgdrivesItems = provider.orgdrives;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: orgdrivesItems.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ListTile(
+                          title: Text(orgdrivesItems[index].name),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        DriveModal(
+                                      type: 'Edit',
+                                      index: index,
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.create_outlined),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        DriveModal(
+                                            type: 'Delete', index: index),
+                                  );
+                                },
+                                icon: const Icon(Icons.delete_outlined),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, '/list-donations');
+                                },
+                                icon: const Icon(Icons.remove_red_eye),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Logout',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
-
-  Drawer get drawer => Drawer(
-    child: ListView(padding: EdgeInsets.zero, children: [
-        const DrawerHeader(child: Text("Organization")),
-        ListTile(
-          title: const Text('Profile'),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const OrgProfile()));
-          },
-        ),
-        ListTile(
-          title: const Text('Home Page'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, "/org-home-page");
-          },
-        ),
-        ListTile(
-          title: const Text('Logout'),
-          onTap: () async {
-            await authApi.signOut();
-            Navigator.pop(context);
-            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
-          },
-        ),
-    ]));
-
 }

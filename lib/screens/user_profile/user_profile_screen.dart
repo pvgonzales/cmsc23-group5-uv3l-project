@@ -16,22 +16,124 @@ class ProfileScreen extends StatelessWidget {
       userAuthProvider.fetchUserData(user.uid, context);
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User Profile'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Full Name: ${userModel.fullname ?? 'N/A'}'),
-            Text('Username: ${userModel.username ?? 'N/A'}'),
-            Text('Phone Number: ${userModel.phoneNumber ?? 'N/A'}'),
-            Text('Address: ${userModel.address ?? 'N/A'}'),
-          ],
+    return ListView(
+      children: [
+        Container(
+          padding: EdgeInsets.only(top: 0, bottom: 20, left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 80,
+                backgroundImage: AssetImage('assets/images/usericon1.png'),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Full Name:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                  Text(
+                    userModel.fullname ?? 'N/A',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Username:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                  Text(
+                    userModel.username ?? 'N/A',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Phone Number:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                  Text(
+                    userModel.phoneNumber ?? 'N/A',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Address:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                  Text(
+                    userModel.address ?? 'N/A',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/");
+                  },
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                      fontFamily: "MyFont1",
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
