@@ -2,73 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_project/model/donation_model.dart';
+import 'package:flutter_project/model/donationdrive_model.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
+import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 //import 'package:flutter_sms/flutter_sms.dart';
-
-class DonationListOrg extends StatefulWidget {
-  const DonationListOrg({super.key});
-
-  @override
-  State<DonationListOrg> createState() => _DonationListOrgState();
-}
-
-class _DonationListOrgState extends State<DonationListOrg> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Donations"),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Consumer<DonationProvider>(
-                  builder: (context, provider, child) {
-                    List<Donation> donations = provider.donations;
-                    return donations.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: donations.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text('${donations[index].id}'),
-                              subtitle: Text(donations[index].logistics),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => DonationStatus(donation: donations[index]),
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(Icons.arrow_right_outlined),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        )
-                      : const Center(child: Text('No donations available'));
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class DonationStatus extends StatefulWidget {
   final Donation donation;
@@ -82,6 +22,7 @@ class _DonationStatusState extends State<DonationStatus> {
   late String _currentStatus;
   XFile? _imageFile;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+  String? _selectedDrive;
 
   @override
   void initState() {
@@ -148,6 +89,29 @@ class _DonationStatusState extends State<DonationStatus> {
     );
   }
 
+  void _submit() {
+    final int donationIndex = context
+        .read<DonationProvider>()
+        .donations
+        .indexWhere((d) => d.id == widget.donation.id);
+    if (donationIndex != -1) {
+      context.read<DonationProvider>().donations[donationIndex] = Donation(
+        id: widget.donation.id,
+        items: widget.donation.items,
+        logistics: widget.donation.logistics,
+        address: widget.donation.address,
+        phoneNum: widget.donation.phoneNum,
+        date: widget.donation.date,
+        time: widget.donation.time,
+        proof: _imageFile,
+        status: _currentStatus,
+        donationdrive: _selectedDrive,
+      );
+      context.read<DonationProvider>().notifyListeners();
+    }
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,49 +129,74 @@ class _DonationStatusState extends State<DonationStatus> {
             Text('Date: ${widget.donation.date}'),
             Text('Time: ${widget.donation.time}'),
             Text('Status: ${widget.donation.status}'),
+            if (widget.donation.proof != null && widget.donation.donationdrive != null) ... [
+              Text('Donation Drive: ${widget.donation.donationdrive}'),
+              Image.file(
+                File(widget.donation.proof!.path),
+                height: 200,
+              ),
+            ],
             const SizedBox(height: 20),
-            DropdownButton<String>(
-              value: _currentStatus,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _currentStatus = newValue!;
-                });
-                final int donationIndex = context
-                    .read<DonationProvider>()
-                    .donations
-                    .indexWhere((d) => d.id == widget.donation.id);
-                if (donationIndex != -1) {
-                  context
-                      .read<DonationProvider>()
-                      .editDonationStatus(donationIndex, _currentStatus);
-                }
-              },
-              items: <String>[
-                'Pending',
-                'Confirmed',
-                'Scheduled for Pick-up',
-                'Complete',
-                'Canceled'
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            if (_currentStatus == 'Complete') ...[
+            if(widget.donation.status != 'Complete') ...[
+                DropdownButton<String>(
+                value: _currentStatus,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _currentStatus = newValue!;
+                  });
+                },
+                items: <String>[
+                  'Pending',
+                  'Confirmed',
+                  'Scheduled for Pick-up',
+                  'Complete',
+                  'Canceled'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              if (_currentStatus == 'Complete') ...[
+                const SizedBox(height: 20),
+                Consumer<DonationDriveProvider>(
+                  builder: (context, driveProvider, child) {
+                    return DropdownButton<String>(
+                      hint: const Text('Select Donation Drive'),
+                      value: _selectedDrive,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedDrive = newValue!;
+                        });
+                      },
+                      items: driveProvider.orgdrives.map<DropdownMenuItem<String>>((DonationDrive drive) {
+                        return DropdownMenuItem<String>(
+                          value: drive.name,
+                          child: Text(drive.name),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _pickImage,
+                  child: const Text('Upload Photo'),
+                ),
+                if (_imageFile != null) ...[
+                  const SizedBox(height: 20),
+                  Image.file(
+                    File(_imageFile!.path),
+                    height: 200,
+                  ),
+                ],
+              ],
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _pickImage,
-                child: const Text('Upload Photo'),
+                onPressed: _submit,
+                child: const Text('Submit'),
               ),
-              if (_imageFile != null) ...[
-                const SizedBox(height: 20),
-                Image.file(
-                  File(_imageFile!.path),
-                  height: 200,
-                ),
-              ],
             ],
           ],
         ),

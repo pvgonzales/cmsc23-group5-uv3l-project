@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/api/auth_api.dart';
+import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/model/org_model.dart';
+import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
+import 'package:flutter_project/screens/organization-view/donations.dart';
 import 'package:flutter_project/screens/organization-view/modal.dart';
 import 'package:flutter_project/screens/organization-view/orgprofile.dart';
 import 'package:provider/provider.dart';
@@ -26,11 +29,10 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
           Navigator.pushNamed(context, '/org-home-page');
           break;
         case 1:
-          Navigator.pushNamed(context, '/org-profile');
-
+          Navigator.pushNamed(context, '/donation-drives');
           break;
         case 2:
-          Navigator.pushNamed(context, '/');
+          Navigator.pushNamed(context, '/org-profile');
           break;
       }
     });
@@ -156,13 +158,13 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                   ),
                 ),
               ),
-              Consumer<OrganizationProvider>(
+              Consumer<DonationProvider>(
                 builder: (context, provider, child) {
-                  List<Organizations> orgdrivesItems = provider.orgdrives;
+                  List<Donation> donations = provider.donations;
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: orgdrivesItems.length,
+                    itemCount: donations.length,
                     itemBuilder: (context, index) {
                       return Card(
                         margin: const EdgeInsets.symmetric(
@@ -173,38 +175,42 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ListTile(
-                          title: Text(orgdrivesItems[index].name),
+                          title: Text('${donations[index].id}'),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              // IconButton(
+                              //   onPressed: () {
+                              //     showDialog(
+                              //       context: context,
+                              //       builder: (BuildContext context) =>
+                              //           DriveModal(
+                              //         type: 'Edit',
+                              //         index: index,
+                              //       ),
+                              //     );
+                              //   },
+                              //   icon: const Icon(Icons.create_outlined),
+                              // ),
+                              // IconButton(
+                              //   onPressed: () {
+                              //     showDialog(
+                              //       context: context,
+                              //       builder: (BuildContext context) =>
+                              //           DriveModal(
+                              //               type: 'Delete', index: index),
+                              //     );
+                              //   },
+                              //   icon: const Icon(Icons.delete_outlined),
+                              // ),
                               IconButton(
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        DriveModal(
-                                      type: 'Edit',
-                                      index: index,
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(Icons.create_outlined),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        DriveModal(
-                                            type: 'Delete', index: index),
-                                  );
-                                },
-                                icon: const Icon(Icons.delete_outlined),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/list-donations');
+                                  Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DonationStatus(donation: donations[index]),
+                                        ),
+                                      );
                                 },
                                 icon: const Icon(Icons.remove_red_eye),
                               ),
@@ -227,12 +233,12 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.domain_verification_rounded),
+            label: 'Drives',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.logout),
-            label: 'Logout',
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
