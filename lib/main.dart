@@ -4,11 +4,13 @@ import 'package:flutter_project/model/user_model.dart';
 import 'package:flutter_project/provider/admin_provider.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
+import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:flutter_project/screens/admin-view/admin-home.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
 import 'package:flutter_project/screens/intro-screen/intro.dart';
+import 'package:flutter_project/screens/organization-view/donationdrives.dart';
 import 'package:flutter_project/screens/organization-view/donations.dart';
 import 'package:flutter_project/screens/organization-view/homepage.dart';
 import 'package:flutter_project/screens/organization-details/orgdetails.dart';
@@ -48,6 +50,7 @@ class MyApp extends StatelessWidget {
             create: (context) => UserAuthProvider(),
           ),
           ChangeNotifierProvider(create: (context) => OrganizationProvider()),
+          ChangeNotifierProvider(create: (context) => DonationDriveProvider()),
           ChangeNotifierProvider(
             create: (_) => AdminProvider(
               Provider.of<OrganizationProvider>(context, listen: false),
@@ -96,9 +99,6 @@ class MyApp extends StatelessWidget {
             } else if (setting.name == '/org-home-page') {
               return MaterialPageRoute(
                   builder: (context) => const HomeScreenOrg());
-            } else if (setting.name == '/list-donations') {
-              return MaterialPageRoute(
-                  builder: (context) => const DonationListOrg());
             } else if (setting.name == '/admin') {
               return MaterialPageRoute(builder: (context) => AdminScreen());
             } else if (setting.name == '/admin-login') {
@@ -108,9 +108,11 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) => const OrgLoginScreen());
             } else if (setting.name == '/org-signup') {
-              return MaterialPageRoute(builder: (context) => OrgSignUpScreen());
+              return MaterialPageRoute(builder: (context) => const OrgSignUpScreen());
             } else if (setting.name == '/org-profile') {
-              return MaterialPageRoute(builder: (context) => OrgProfile());
+              return MaterialPageRoute(builder: (context) => const OrgProfile());
+            } else if (setting.name == '/donation-drives') {
+              return MaterialPageRoute(builder: (context) => const DonationDriveScreen());
             } else {
               return MaterialPageRoute(
                   builder: (context) => const Placeholder());
