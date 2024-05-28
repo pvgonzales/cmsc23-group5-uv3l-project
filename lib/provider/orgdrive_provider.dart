@@ -51,23 +51,4 @@ class OrganizationProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<Organizations> get orgdrives => _orgdrives;
 
-  void addDonation(Organizations newDonationDrive) {
-    _orgdrives.add(newDonationDrive);
-    notifyListeners();
-  }
-
-  void editDrive(int index, Organizations updatedDrive) {
-    _orgdrives[index] = updatedDrive;
-    notifyListeners();
-  }
-
-  void deleteDrive(int id) {
-    for (int i = 0; i < _orgdrives.length; i++) {
-      if (_orgdrives[i].id == id) {
-        _orgdrives.removeAt(i);
-        break;
-      }
-    }
-    notifyListeners();
-  }
 }

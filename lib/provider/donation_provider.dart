@@ -42,7 +42,7 @@ class DonationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    void editDonationStatus(int index, String newStatus) {
+  void editDonationStatus(int index, String newStatus) {
     _donations[index].status = newStatus;
     notifyListeners();
   }
