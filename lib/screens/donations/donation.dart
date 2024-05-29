@@ -10,6 +10,8 @@ class DonationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DonationProvider donationProvider = Provider.of<DonationProvider>(context, listen: false);
+    donationProvider.fetchDonations();
     return Scaffold(
       backgroundColor: Color(0xfff4f6ff),
       body: Consumer<DonationProvider>(

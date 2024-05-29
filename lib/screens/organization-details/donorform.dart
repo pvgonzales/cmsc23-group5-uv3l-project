@@ -73,6 +73,7 @@ class _DonorFormFormState extends State<DonorForm> {
 
   @override
   Widget build(BuildContext context) {
+    final DonationProvider donationProvider = Provider.of<DonationProvider>(context);
     return Form(
       key: _formKey,
       child: Column(
@@ -316,9 +317,10 @@ class _DonorFormFormState extends State<DonorForm> {
                   proof: _imageFile,
                   status: "Pending"
                 );
-                var donationProvider =
-                    Provider.of<DonationProvider>(context, listen: false);
+                // var donationProvider =
+                //     Provider.of<DonationProvider>(context, listen: false);
                 donationProvider.addDonation(newDonation);
+                // donationProvider.fetchDonations();
                 Navigator.pop(
                     context, 'Donation submitted! Kindly wait for approval.');
               }
