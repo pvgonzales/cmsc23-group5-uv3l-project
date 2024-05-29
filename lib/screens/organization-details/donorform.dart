@@ -299,6 +299,7 @@ class _DonorFormFormState extends State<DonorForm> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
                 int newDonationId = DateTime.now().millisecondsSinceEpoch;
                 List<String> selectedItems = [];
                 if (food!) selectedItems.add('Food');
