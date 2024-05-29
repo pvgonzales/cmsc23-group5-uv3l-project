@@ -46,7 +46,7 @@ dependencies:
   image_picker: ^1.1.1
   # flutter_sms: ^2.3.3
   flutter_local_notifications: ^17.1.2
-  qr_bar_code_scanner_dialog: ^0.0.5
+  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:
