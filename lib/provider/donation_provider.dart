@@ -42,9 +42,14 @@ class DonationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editDonationStatus(int index, String newStatus) {
-    _donations[index].status = newStatus;
-    notifyListeners();
+  void editDropOffStatus(int id, String status) {
+    for (var donation in donations) {
+      if (donation.id == id) {
+        donation.status = status;
+        notifyListeners();
+        break;
+      }
+    }
   }
 
 }
