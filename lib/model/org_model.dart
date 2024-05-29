@@ -4,13 +4,14 @@ class Organizations {
   final String description;
   final String? image;
   final bool? status;
-  // ADD MORE IF NECESSARY
+  final String type;
 
   Organizations({
     required this.id,
     required this.name,
     this.image,
     required this.description,
-    this.status
+    this.status,
+    required this.type
   });
 }
