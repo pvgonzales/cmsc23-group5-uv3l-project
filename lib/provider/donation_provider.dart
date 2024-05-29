@@ -45,7 +45,7 @@ class DonationProvider extends ChangeNotifier {
 
     try {
       await donationApi.addDonation(newDonation);
-      _donations.add(newDonation);
+      // _donations.add(newDonation);
     } catch (e) {
       print(e);
     }
