@@ -124,8 +124,10 @@ class _DonationStatusState extends State<DonationStatus> {
           children: [
             Text('Items: ${widget.donation.items.join(', ')}'),
             Text('Logistics: ${widget.donation.logistics}'),
-            Text('Address: ${widget.donation.address}'),
-            Text('Phone Number: ${widget.donation.phoneNum}'),
+            if (widget.donation.address != null && widget.donation.phoneNum != null)...[
+              Text('Address: ${widget.donation.address}'),
+              Text('Phone Number: ${widget.donation.phoneNum}')
+            ], 
             Text('Date: ${widget.donation.date}'),
             Text('Time: ${widget.donation.time}'),
             Text('Status: ${widget.donation.status}'),
@@ -138,26 +140,49 @@ class _DonationStatusState extends State<DonationStatus> {
             ],
             const SizedBox(height: 20),
             if(widget.donation.status != 'Complete') ...[
+              if(widget.donation.logistics == 'Pick up')...[
                 DropdownButton<String>(
-                value: _currentStatus,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _currentStatus = newValue!;
-                  });
-                },
-                items: <String>[
-                  'Pending',
-                  'Confirmed',
-                  'Scheduled for Pick-up',
-                  'Complete',
-                  'Canceled'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
+                  value: _currentStatus,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _currentStatus = newValue!;
+                    });
+                  },
+                  items: <String>[
+                    'Pending',
+                    'Confirmed',
+                    'Scheduled for Pick-up',
+                    'Complete',
+                    'Canceled'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ]
+              else ... [
+                DropdownButton<String>(
+                  value: _currentStatus,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _currentStatus = newValue!;
+                    });
+                  },
+                  items: <String>[
+                    'Pending',
+                    'Confirmed',
+                    'Complete',
+                    'Canceled'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ],
               if (_currentStatus == 'Complete') ...[
                 const SizedBox(height: 20),
                 Consumer<DonationDriveProvider>(
@@ -182,7 +207,12 @@ class _DonationStatusState extends State<DonationStatus> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _pickImage,
-                  child: const Text('Upload Photo'),
+                  child: const Column(
+                    children: [
+                      Icon(Icons.camera_alt),
+                      Text('Upload Photo')
+                    ],
+                  ),
                 ),
                 if (_imageFile != null) ...[
                   const SizedBox(height: 20),
