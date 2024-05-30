@@ -6,6 +6,8 @@ class UserModel extends ChangeNotifier {
   String? username;
   String? phoneNumber;
   String? address;
+  String? usertype;
+  String? photo;
 
   void updateUserDetails({
     String? uid,
