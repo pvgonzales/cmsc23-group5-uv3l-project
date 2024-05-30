@@ -118,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/");
+                    Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
                   },
                   child: Text(
                     'Logout',

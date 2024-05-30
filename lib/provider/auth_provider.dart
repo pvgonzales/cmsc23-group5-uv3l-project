@@ -16,9 +16,7 @@ class UserAuthProvider with ChangeNotifier {
   Stream<User?> get userStream => _userStream;
   User? get user => authService.getUser();
 
-  // Class constructor
   UserAuthProvider() {
-    // TODO init _userStream
     authService = FirebaseAuthApi();
     fetchUser();
   }
