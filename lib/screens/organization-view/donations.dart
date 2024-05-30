@@ -49,8 +49,6 @@ class _DonationStatusState extends State<DonationStatus> {
         setState(() {
           _imageFile = image;
         });
-       // _sendSMS();
-        _showNotification();
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
