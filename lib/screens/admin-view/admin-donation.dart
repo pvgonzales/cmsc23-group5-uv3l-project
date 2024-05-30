@@ -189,6 +189,6 @@ class _DonationScreenAdminState extends State<DonationScreenAdmin> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-    });
+    }); //commit try
   }
 }
