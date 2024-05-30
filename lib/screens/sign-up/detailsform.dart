@@ -1,6 +1,9 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_project/model/user_model.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class DetailsForm extends StatefulWidget {
@@ -17,6 +20,37 @@ class _DetailsFormFormState extends State<DetailsForm> {
   String? username;
   String? phoneNumber;
   String? address;
+  String usertype = 'Donor';
+  bool organization = false;
+  XFile? _imageFile;
+  String? convertedImage;
+
+  Future<void> _pickImage() async {
+    final PermissionStatus status = await Permission.camera.request();
+    if (status == PermissionStatus.granted) {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        setState(() {
+          _imageFile = image;
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Camera permission denied')),
+      );
+    }
+  }
+
+  Future<String> _convertImage(XFile image) async {
+    try {
+      final bytes = await image.readAsBytes();
+      String base64Image = base64Encode(bytes);
+      return (base64Image);
+    } catch (e) {
+      return '$e';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +138,21 @@ class _DetailsFormFormState extends State<DetailsForm> {
                 suffixIcon: Icon(Icons.pin_drop)),
           ),
           const SizedBox(height: 20),
+          if(organization == true)...[
+            IconButton(
+              onPressed: _pickImage, 
+              icon: const Icon(Icons.camera_alt_rounded)
+            ),
+            const Text('Upload Photo'),
+            if (_imageFile != null) ...[
+                  const SizedBox(height: 20),
+                  Image.file(
+                    File(_imageFile!.path),
+                    height: 150,
+                  ),
+                ],
+          ],
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
@@ -119,24 +168,56 @@ class _DetailsFormFormState extends State<DetailsForm> {
                   );
                   return;
                 } else {
-                  // Update user details using UserModel
-                  // Provider.of<UserModel>(context, listen: false)
-                  //     .updateUserDetails(
-                  //   fullname: fullname,
-                  //   username: username,
-                  //   phoneNumber: phoneNumber,
-                  //   address: address,
-                  // );
                   // store in firebase
+                  if(organization == true) {
+                    usertype = 'Organization';
+                    convertedImage = await _convertImage(_imageFile!);
+                  }
                   context.read<UserAuthProvider>()
                   .authService
-                  .signUp(fullname!, email!, username!, password!, phoneNumber!, address!);
+                  .signUp(fullname!, email!, username!, password!, phoneNumber!, address!, usertype, convertedImage);
                   Navigator.pushNamed(context, '/sign-in');
                 }
               }
             },
-            child: const Text("Continue"),
+            child: const Text("Sign Up"),
           ),
+          const SizedBox(height: 16),
+          if(organization == true) ...[
+            Text(
+                    '''By continuing, you confirm that you are a legitimate organization and agree with our Terms and Conditions. If found otherwise, you agree to be bound by our terms.''',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+          if(organization == false)...[
+            Text(
+              'By continuing, you confirm that you agree \nwith our Terms and Conditions',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Sign up as an organization? ",
+                  style: TextStyle(fontSize: 16),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      organization = !organization;
+                    });
+                  },
+                  child: const Text(
+                    "Click Here",
+                    style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 0, 97, 10), decoration: TextDecoration.underline),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
