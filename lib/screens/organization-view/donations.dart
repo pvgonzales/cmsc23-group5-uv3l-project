@@ -8,7 +8,7 @@ import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-//import 'package:flutter_sms/flutter_sms.dart';
+import 'package:telephony/telephony.dart';
 
 class DonationStatus extends StatefulWidget {
   final Donation donation;
@@ -59,15 +59,32 @@ class _DonationStatusState extends State<DonationStatus> {
     }
   }
 
-  // void _sendSMS() async {
-  //   String message = "Your donation has been successfully completed. Thank you for your contribution!";
-  //   List<String> recipients = [widget.donation.phoneNum!];
-  //   String result = await sendSMS(message: message, recipients: recipients)
-  //       .catchError((onError) {
-  //     print(onError);
-  //   });
-  //   print(result);
-  // }
+void _sendSMS() async {
+  String message = "Your donation has been successfully completed. Thank you for your contribution!";
+  String recipient = widget.donation.phoneNum!;
+  
+  final Telephony telephony = Telephony.instance;
+
+  bool? permissionsGranted = await telephony.requestSmsPermissions;
+
+  if (permissionsGranted ?? false) {
+    telephony.sendSms(
+      to: recipient,
+      message: message,
+      statusListener: (SendStatus status) {
+        if (status == SendStatus.SENT) {
+          print("SMS is sent!");
+        } else if (status == SendStatus.DELIVERED) {
+          print("SMS is delivered!");
+        } else {
+          print("Failed to send SMS.");
+        }
+      },
+    );
+  } else {
+    print("SMS permissions not granted.");
+  }
+}
 
   Future<void> _showNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -109,7 +126,13 @@ class _DonationStatusState extends State<DonationStatus> {
       );
       context.read<DonationProvider>().notifyListeners();
     }
+    if(_currentStatus == 'Complete'){
+      _sendSMS();
+      _showNotification();
+    }
     Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Donation Status Updated')));
   }
 
   @override
