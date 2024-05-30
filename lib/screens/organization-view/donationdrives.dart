@@ -12,7 +12,6 @@ class DonationDriveScreen extends StatefulWidget {
 }
 
 class _DonationDriveScreenState extends State<DonationDriveScreen> {
-
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -49,8 +48,7 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
                 CircleAvatar(
                   radius: 20,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: AssetImage(
-                      "assets/images/orglogo2.png"),
+                  backgroundImage: AssetImage("assets/images/orglogo2.png"),
                 ),
                 SizedBox(
                   width: 10,
@@ -112,7 +110,15 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ListTile(
-                          title: Text(donationsdrives[index].name),
+                          title: Text(
+                            donationsdrives[index].name,
+                            style: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Color(0xFF212738),
+                              fontWeight: FontWeight.w900,
+                              fontSize: 13,
+                            ),
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -158,14 +164,14 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
             context: context,
             builder: (BuildContext context) => const DriveModal(
               type: 'Add',
-              index:
-                  -1,
+              index: -1,
             ),
           );
         },
         child: const Icon(Icons.add_outlined),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF212738),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -180,10 +186,11 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
             label: 'Profile',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        currentIndex: 1,
+        selectedItemColor: Color.fromARGB(255, 243, 164, 160),
         onTap: _onItemTapped,
+        unselectedItemColor: Colors.white,
       ),
-  );
+    );
   }
 }

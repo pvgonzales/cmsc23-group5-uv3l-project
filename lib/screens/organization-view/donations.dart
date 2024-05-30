@@ -49,7 +49,7 @@ class _DonationStatusState extends State<DonationStatus> {
         setState(() {
           _imageFile = image;
         });
-       // _sendSMS();
+        // _sendSMS();
         _showNotification();
       }
     } else {
@@ -59,32 +59,33 @@ class _DonationStatusState extends State<DonationStatus> {
     }
   }
 
-void _sendSMS() async {
-  String message = "Your donation has been successfully completed. Thank you for your contribution!";
-  String recipient = widget.donation.phoneNum!;
-  
-  final Telephony telephony = Telephony.instance;
+  void _sendSMS() async {
+    String message =
+        "Your donation has been successfully completed. Thank you for your contribution!";
+    String recipient = widget.donation.phoneNum!;
 
-  bool? permissionsGranted = await telephony.requestSmsPermissions;
+    final Telephony telephony = Telephony.instance;
 
-  if (permissionsGranted ?? false) {
-    telephony.sendSms(
-      to: recipient,
-      message: message,
-      statusListener: (SendStatus status) {
-        if (status == SendStatus.SENT) {
-          print("SMS is sent!");
-        } else if (status == SendStatus.DELIVERED) {
-          print("SMS is delivered!");
-        } else {
-          print("Failed to send SMS.");
-        }
-      },
-    );
-  } else {
-    print("SMS permissions not granted.");
+    bool? permissionsGranted = await telephony.requestSmsPermissions;
+
+    if (permissionsGranted ?? false) {
+      telephony.sendSms(
+        to: recipient,
+        message: message,
+        statusListener: (SendStatus status) {
+          if (status == SendStatus.SENT) {
+            print("SMS is sent!");
+          } else if (status == SendStatus.DELIVERED) {
+            print("SMS is delivered!");
+          } else {
+            print("Failed to send SMS.");
+          }
+        },
+      );
+    } else {
+      print("SMS permissions not granted.");
+    }
   }
-}
 
   Future<void> _showNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -126,133 +127,336 @@ void _sendSMS() async {
       );
       context.read<DonationProvider>().notifyListeners();
     }
-    if(_currentStatus == 'Complete'){
+    if (_currentStatus == 'Complete') {
       _sendSMS();
       _showNotification();
     }
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Donation Status Updated')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Color.fromARGB(255, 255, 216, 214),
+        content: Text(
+          'Donation Status Updated',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            fontFamily: "MyFont1",
+            color: Color(0xFF212738),
+          ),
+        )));
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.donation.id}'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Items: ${widget.donation.items.join(', ')}'),
-            Text('Logistics: ${widget.donation.logistics}'),
-            if (widget.donation.address != null && widget.donation.phoneNum != null)...[
-              Text('Address: ${widget.donation.address}'),
-              Text('Phone Number: ${widget.donation.phoneNum}')
-            ], 
-            Text('Date: ${widget.donation.date}'),
-            Text('Time: ${widget.donation.time}'),
-            Text('Status: ${widget.donation.status}'),
-            if (widget.donation.proof != null && widget.donation.donationdrive != null) ... [
-              Text('Donation Drive: ${widget.donation.donationdrive}'),
-              Image.file(
-                File(widget.donation.proof!.path),
-                height: 200,
-              ),
-            ],
-            const SizedBox(height: 20),
-            if(widget.donation.status != 'Complete') ...[
-              if(widget.donation.logistics == 'Pick up')...[
-                DropdownButton<String>(
-                  value: _currentStatus,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _currentStatus = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'Pending',
-                    'Confirmed',
-                    'Scheduled for Pick-up',
-                    'Complete',
-                    'Canceled'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ]
-              else ... [
-                DropdownButton<String>(
-                  value: _currentStatus,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _currentStatus = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'Pending',
-                    'Confirmed',
-                    'Complete',
-                    'Canceled'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ],
-              if (_currentStatus == 'Complete') ...[
-                const SizedBox(height: 20),
-                Consumer<DonationDriveProvider>(
-                  builder: (context, driveProvider, child) {
-                    return DropdownButton<String>(
-                      hint: const Text('Select Donation Drive'),
-                      value: _selectedDrive,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedDrive = newValue!;
-                        });
-                      },
-                      items: driveProvider.orgdrives.map<DropdownMenuItem<String>>((DonationDrive drive) {
-                        return DropdownMenuItem<String>(
-                          value: drive.name,
-                          child: Text(drive.name),
-                        );
-                      }).toList(),
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: const Column(
+        appBar: AppBar(
+          title: Text(
+            'Donation Details',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              fontFamily: "MyFont1",
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: Color(0xFF212738),
+          iconTheme: IconThemeData(
+            color: Colors.white, // Change this color to the desired color
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(left: 30, right: 30, top: 50, bottom: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Column(
                     children: [
-                      Icon(Icons.camera_alt),
-                      Text('Upload Photo')
+                      Text(
+                        '${widget.donation.id}',
+                        style: TextStyle(
+                          fontFamily: "MyFont1",
+                          color: Color(0xFF212738),
+                          fontSize: 19,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 0,
+                      ),
+                      Text(
+                        'Donation ID',
+                        style: TextStyle(
+                          fontFamily: "MyFont1",
+                          color: Color(0xFF212738),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      )
                     ],
                   ),
                 ),
-                if (_imageFile != null) ...[
-                  const SizedBox(height: 20),
+                SizedBox(height: 20.0),
+                _buildDataRow('Items', '${widget.donation.items.join(', ')}'),
+                SizedBox(height: 10.0),
+                _buildDataRow('Logistics', '${widget.donation.logistics}'),
+                if (widget.donation.address != null &&
+                    widget.donation.phoneNum != null) ...[
+                  SizedBox(height: 10.0),
+                  _buildDataRow('Address', '${widget.donation.address}'),
+                  SizedBox(height: 10.0),
+                  _buildDataRow('Phone Number', '${widget.donation.phoneNum}'),
+                ],
+                SizedBox(height: 10.0),
+                _buildDataRow('Date', '${widget.donation.date}'),
+                SizedBox(height: 10.0),
+                _buildDataRow('Time', '${widget.donation.time}'),
+                SizedBox(height: 10.0),
+                _buildDataRow('Status', '${widget.donation.status}'),
+                if (widget.donation.proof != null &&
+                    widget.donation.donationdrive != null) ...[
+                  SizedBox(height: 10.0),
+                  _buildDataRow(
+                      'Donation Drive', '${widget.donation.donationdrive}'),
                   Image.file(
-                    File(_imageFile!.path),
+                    File(widget.donation.proof!.path),
                     height: 200,
+                    fit: BoxFit.cover,
                   ),
                 ],
+                SizedBox(height: 6.0),
+                if (widget.donation.status != 'Complete') ...[
+                  if (widget.donation.logistics == 'Pick up') ...[
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: DropdownButton<String>(
+                          dropdownColor: Color.fromARGB(255, 255, 227, 225),
+                          borderRadius: BorderRadius.circular(20),
+                          value: _currentStatus,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _currentStatus = newValue!;
+                            });
+                          },
+                          underline: Container(
+                            height: 1,
+                            color: Color(0xFF212738),
+                          ),
+                          items: <String>[
+                            'Pending',
+                            'Confirmed',
+                            'Scheduled for Pick-up',
+                            'Complete',
+                            'Canceled'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: TextStyle(
+                                  fontFamily: "MyFont1",
+                                  color: Color(0xFF212738),
+                                  fontSize: 13,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ] else ...[
+                    Center(
+                      child: DropdownButton<String>(
+                        dropdownColor: Color.fromARGB(255, 255, 227, 225),
+                        value: _currentStatus,
+                        borderRadius: BorderRadius.circular(20),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _currentStatus = newValue!;
+                          });
+                        },
+                        underline: Container(
+                          height: 1,
+                          color: Color(0xFF212738),
+                        ),
+                        items: <String>[
+                          'Pending',
+                          'Confirmed',
+                          'Complete',
+                          'Canceled'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: TextStyle(
+                                fontFamily: "MyFont1",
+                                color: Color(0xFF212738),
+                                fontSize: 13,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  ],
+                  if (_currentStatus == 'Complete') ...[
+                    SizedBox(height: 10.0),
+                    Consumer<DonationDriveProvider>(
+                      builder: (context, driveProvider, child) {
+                        return Center(
+                          child: Container(
+                            child: DropdownButton<String>(
+                              dropdownColor: Color.fromARGB(255, 255, 227, 225),
+                              borderRadius: BorderRadius.circular(20),
+                              hint: Text(
+                                'Select Donation Drive',
+                                style: TextStyle(
+                                  fontFamily: "MyFont1",
+                                  color: Color(0xFF212738),
+                                  fontSize: 13,
+                                ),
+                              ),
+                              value: _selectedDrive,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedDrive = newValue!;
+                                });
+                              },
+                              underline: Container(
+                                height: 1,
+                                color: Color(0xFF212738),
+                              ),
+                              items: driveProvider.orgdrives
+                                  .map<DropdownMenuItem<String>>(
+                                      (DonationDrive drive) {
+                                return DropdownMenuItem<String>(
+                                  value: drive.name,
+                                  child: Text(
+                                    drive.name,
+                                    style: TextStyle(
+                                      fontFamily: "MyFont1",
+                                      color: Color(0xFF212738),
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 5.0),
+                    Center(
+                        child: Column(
+                      children: [
+                        ElevatedButton.icon(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color?>(null),
+                          ),
+                          onPressed: _pickImage,
+                          icon: Icon(
+                            Icons.camera_alt,
+                            color: Color(0xFF212738),
+                          ),
+                          label: Text(
+                            'Upload Photo',
+                            style: TextStyle(
+                                fontFamily: "MyFont1",
+                                color: Color(0xFF212738),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        if (_imageFile != null) ...[
+                          SizedBox(height: 10.0),
+                          Image.file(
+                            File(_imageFile!.path),
+                            height: 150,
+                            fit: BoxFit.cover,
+                          ),
+                        ],
+                      ],
+                    ))
+                  ],
+                  SizedBox(height: 5.0),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submit,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color?>(null),
+                      ),
+                      child: Text(
+                        'Submit',
+                        style: TextStyle(
+                            fontFamily: "MyFont1",
+                            color: Color(0xFF212738),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  )
+                ],
               ],
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submit,
-                child: const Text('Submit'),
+            ),
+          ),
+        ));
+  }
+
+  Widget _buildDataRow(String label, String value) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color.fromARGB(82, 255, 207, 205),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      padding: EdgeInsets.all(6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 100,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            padding: EdgeInsets.all(6.0),
+            child: Center(
+              child: Text(
+                textAlign: TextAlign.center,
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "MyFont1",
+                  color: Color(0xFF212738),
+                  fontStyle: FontStyle.italic,
+                ),
               ),
-            ],
-          ],
-        ),
+            ),
+          ),
+          Container(
+            width: 120,
+            decoration: BoxDecoration(
+              color: Color(0xFF212738),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            padding: EdgeInsets.all(6.0),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
+                fontFamily: "MyFont1",
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

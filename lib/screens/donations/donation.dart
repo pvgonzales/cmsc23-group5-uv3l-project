@@ -4,13 +4,15 @@ import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/screens/donations/showqr.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class DonationsScreen extends StatelessWidget {
   const DonationsScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    final DonationProvider donationProvider = Provider.of<DonationProvider>(context, listen: false);
+    final DonationProvider donationProvider =
+        Provider.of<DonationProvider>(context, listen: false);
     donationProvider.fetchDonations();
     return Scaffold(
       backgroundColor: Color(0xfff4f6ff),
@@ -124,18 +126,32 @@ class DonationCard extends StatelessWidget {
                       SizedBox(
                         height: 16,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Items:',
-                            style: labelTextStyle,
-                          ),
-                          Text(
-                            '${donation.items.join(', ')}',
-                            style: valueTextStyle,
-                          ),
-                        ],
+                      Container(
+                        padding: EdgeInsets.all(0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 100,
+                              child: Text(
+                                'Items:',
+                                style: labelTextStyle,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Flexible(
+                              child: Container(
+                                padding: EdgeInsets.all(0),
+                                child: Text(
+                                  '${donation.items.join(', ')}',
+                                  style: valueTextStyle,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,7 +166,7 @@ class DonationCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if(donation.logistics == 'Pick up') ... [
+                      if (donation.logistics == 'Pick up') ...[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -224,7 +240,19 @@ class DonationCard extends StatelessWidget {
                       ),
                       SizedBox(
                         height: 0,
-                      )
+                      ),
+                      if (donation.logistics == 'Drop-off')
+                        (Column(children: [
+                          QrImageView(
+                            data:
+                                "${donation.id}\n${donation.items.join(', ')}\n${donation.address}\n${donation.phoneNum}\n${donation.date}\n${donation.time}\n${donation.status}",
+                            version: QrVersions.auto,
+                            size: 140.0,
+                          ),
+                        ])),
+                      SizedBox(
+                        height: 0,
+                      ),
                     ],
                   ),
                   actions: [

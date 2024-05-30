@@ -184,23 +184,26 @@ class OrgProfile extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF212738),
+
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.domain_verification_rounded),
             label: 'Drives',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],
         currentIndex: 2, // Set the current index to indicate the profile screen
-        selectedItemColor: Colors.blue,
         onTap: (index) => _onItemTapped(context, index),
+        selectedItemColor: Color.fromARGB(255, 243, 164, 160),
+        unselectedItemColor: Colors.white,
       ),
     );
   }
