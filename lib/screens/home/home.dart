@@ -209,6 +209,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+        SizedBox(
+          height: 8,
+        ),
         Expanded(
           child: ListView.builder(
             itemCount: orgdrivesItems.length,

@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             useMaterial3: true,
           ),
-          initialRoute: '/org-home-page',
+          initialRoute: '/home',
           onGenerateRoute: (setting) {
             if (setting.name == '/') {
               return MaterialPageRoute(
