@@ -12,10 +12,9 @@ class OrgProfile extends StatelessWidget {
         Navigator.pushReplacementNamed(context, '/org-home-page');
         break;
       case 1:
-        // Already on the profile screen
+        Navigator.pushReplacementNamed(context, '/donation-drives');
         break;
       case 2:
-        Navigator.pushReplacementNamed(context, '/');
         break;
     }
   }
@@ -168,6 +167,7 @@ class OrgProfile extends StatelessWidget {
             Center(
               child: TextButton(
                 onPressed: () {
+                  context.read<UserAuthProvider>().authService.signOut();
                   Navigator.pushNamed(context, "/");
                 },
                 child: Text(
@@ -191,14 +191,14 @@ class OrgProfile extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Drives',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.logout),
-            label: 'Logout',
+            label: 'Profile',
           ),
         ],
-        currentIndex: 1, // Set the current index to indicate the profile screen
+        currentIndex: 2, // Set the current index to indicate the profile screen
         selectedItemColor: Colors.blue,
         onTap: (index) => _onItemTapped(context, index),
       ),

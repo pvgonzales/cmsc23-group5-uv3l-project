@@ -53,7 +53,7 @@ class ShowQR extends StatelessWidget {
             Screenshot(
               controller: screenshotcontroller,
               child: QrImageView(
-                data: '12345678', // Must contain donation details
+                data: '${donation.id}',
                 version: QrVersions.auto,
                 size: 150.0,
                 gapless: false,

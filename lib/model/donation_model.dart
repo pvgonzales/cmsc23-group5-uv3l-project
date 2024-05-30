@@ -10,6 +10,7 @@ class Donation {
   final String? time;
   final XFile? proof;
   String? status;
+  String? donationdrive;
 
   Donation({
     required this.id,
@@ -20,6 +21,7 @@ class Donation {
     required this.date,
     required this.time,
     this.proof,
-    required this.status
+    required this.status,
+    this.donationdrive
   });
 }

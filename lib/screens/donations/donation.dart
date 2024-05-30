@@ -10,6 +10,8 @@ class DonationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DonationProvider donationProvider = Provider.of<DonationProvider>(context, listen: false);
+    donationProvider.fetchDonations();
     return Scaffold(
       backgroundColor: Color(0xfff4f6ff),
       body: Consumer<DonationProvider>(
@@ -148,32 +150,34 @@ class DonationCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Address:',
-                            style: labelTextStyle,
-                          ),
-                          Text(
-                            '${donation.address}',
-                            style: valueTextStyle,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Phone Number:',
-                            style: labelTextStyle,
-                          ),
-                          Text(
-                            '${donation.phoneNum}',
-                            style: valueTextStyle,
-                          ),
-                        ],
-                      ),
+                      if(donation.logistics == 'Pick up') ... [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Address:',
+                              style: labelTextStyle,
+                            ),
+                            Text(
+                              '${donation.address}',
+                              style: valueTextStyle,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Phone Number:',
+                              style: labelTextStyle,
+                            ),
+                            Text(
+                              '${donation.phoneNum}',
+                              style: valueTextStyle,
+                            ),
+                          ],
+                        ),
+                      ],
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

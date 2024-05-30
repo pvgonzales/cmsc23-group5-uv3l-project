@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/model/donationdrive_model.dart';
 import 'package:flutter_project/model/org_model.dart';
+import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -26,10 +28,9 @@ class _DriveModalState extends State<DriveModal> {
     _formFieldDesc = TextEditingController();
 
     if (widget.index != -1) {
-      List<Organizations> orgdrivesItems = context.read<OrganizationProvider>().orgdrives;
+      List<DonationDrive> orgdrivesItems = context.read<DonationDriveProvider>().orgdrives;
       _formFieldName.text = orgdrivesItems[widget.index].name;
       _formFieldDesc.text = orgdrivesItems[widget.index].description;
-      status = orgdrivesItems[widget.index].status!;
     }
   }
 
@@ -43,6 +44,8 @@ class _DriveModalState extends State<DriveModal> {
   // Method to show the title of the modal depending on the functionality
   Text _buildTitle() {
     switch (widget.type) {
+      case 'Add':
+        return const Text("Add Donation Drive");
       case 'Edit':
         return const Text("Edit Donation Drive");
       case 'Delete':
@@ -76,7 +79,7 @@ class _DriveModalState extends State<DriveModal> {
                       controller: _formFieldName,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        hintText: orgdrivesItems[widget.index].name,
+                        hintText: widget.index != -1? orgdrivesItems[widget.index].name : '',
                       ),
                     ),
                   ],
@@ -91,28 +94,11 @@ class _DriveModalState extends State<DriveModal> {
                       controller: _formFieldDesc,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        hintText: orgdrivesItems[widget.index].description,
+                        hintText: widget.index != -1? orgdrivesItems[widget.index].description : '',
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 20,),
-                Column(
-                  children: [
-                    const Center(
-                      child: Text("Status"),
-                    ),
-                    Switch(
-                      value: status,
-                      activeColor: Colors.red,
-                      onChanged: (bool value) {
-                        setState(() {
-                          status = value;
-                        });
-                      },
-                    )
-                  ],
-                ),
+                )
               ],
             ),
           );
@@ -121,20 +107,33 @@ class _DriveModalState extends State<DriveModal> {
   }
 
   TextButton _dialogAction(BuildContext context) {
-    List<Organizations> orgdrivesItems = context.read<OrganizationProvider>().orgdrives;
+    List<DonationDrive> orgdrivesItems = context.read<DonationDriveProvider>().orgdrives;
 
     return TextButton(
       onPressed: () {
         switch (widget.type) {
+          case 'Add':
+            {
+              
+              DonationDrive newDonationDrive = DonationDrive(
+                  id: 4,
+                  name: _formFieldName.text,
+                  description: _formFieldDesc.text);
+
+              context.read<DonationDriveProvider>().addDrive(newDonationDrive);
+
+              // Remove dialog after adding
+              Navigator.of(context).pop();
+              break;
+            }
           case 'Edit':
             {
-              Organizations info = Organizations(
+              DonationDrive info = DonationDrive(
                 id: 1,
                 name: _formFieldName.text,
                 description: _formFieldDesc.text,
-                status: status,
               );
-              context.read<OrganizationProvider>().editDrive(widget.index, info);
+              context.read<DonationDriveProvider>().editDrive(widget.index, info);
 
               // Remove dialog after editing
               Navigator.of(context).pop();
@@ -142,7 +141,7 @@ class _DriveModalState extends State<DriveModal> {
             }
           case 'Delete':
             {
-              context.read<OrganizationProvider>().deleteDrive(orgdrivesItems[widget.index].id);
+              context.read<DonationDriveProvider>().deleteDrive(orgdrivesItems[widget.index].id);
               // Remove dialog after editing
               Navigator.of(context).pop();
               break;

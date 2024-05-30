@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/api/auth_api.dart';
-import 'package:flutter_project/model/org_model.dart';
-import 'package:flutter_project/provider/orgdrive_provider.dart';
-import 'package:flutter_project/screens/organization-view/modal.dart';
-import 'package:flutter_project/screens/organization-view/orgprofile.dart';
+import 'package:flutter_project/model/donation_model.dart';
+import 'package:flutter_project/provider/donation_provider.dart';
+import 'package:flutter_project/screens/organization-view/donations.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class HomeScreenOrg extends StatefulWidget {
   const HomeScreenOrg({super.key});
@@ -26,11 +27,10 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
           Navigator.pushNamed(context, '/org-home-page');
           break;
         case 1:
-          Navigator.pushNamed(context, '/org-profile');
-
+          Navigator.pushNamed(context, '/donation-drives');
           break;
         case 2:
-          Navigator.pushNamed(context, '/');
+          Navigator.pushNamed(context, '/org-profile');
           break;
       }
     });
@@ -156,13 +156,13 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                   ),
                 ),
               ),
-              Consumer<OrganizationProvider>(
+              Consumer<DonationProvider>(
                 builder: (context, provider, child) {
-                  List<Organizations> orgdrivesItems = provider.orgdrives;
+                  List<Donation> donations = provider.donations;
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: orgdrivesItems.length,
+                    itemCount: donations.length,
                     itemBuilder: (context, index) {
                       return Card(
                         margin: const EdgeInsets.symmetric(
@@ -173,38 +173,18 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ListTile(
-                          title: Text(orgdrivesItems[index].name),
+                          title: Text('${donations[index].id}'),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        DriveModal(
-                                      type: 'Edit',
-                                      index: index,
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(Icons.create_outlined),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        DriveModal(
-                                            type: 'Delete', index: index),
-                                  );
-                                },
-                                icon: const Icon(Icons.delete_outlined),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/list-donations');
+                                  Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DonationStatus(donation: donations[index]),
+                                        ),
+                                      );
                                 },
                                 icon: const Icon(Icons.remove_red_eye),
                               ),
@@ -220,6 +200,15 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: ()async{
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => QRScanner()),
+          );
+        },
+        child: const Icon(Icons.qr_code_scanner_rounded),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -227,12 +216,12 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.domain_verification_rounded),
+            label: 'Drives',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.logout),
-            label: 'Logout',
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -240,5 +229,66 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
         onTap: _onItemTapped,
       ),
     );
+  }
+}
+
+class QRScanner extends StatefulWidget {
+  const QRScanner({super.key});
+  
+  @override
+  State<StatefulWidget> createState() => _QRScannerState();
+}
+
+class _QRScannerState extends State<QRScanner> {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  QRViewController? controller; 
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("QR Scanner")),
+      body: QRView(
+        key: qrKey,
+        onQRViewCreated: _onQRViewCreated,
+        overlay: QrScannerOverlayShape(
+          borderColor: Colors.red,
+          borderRadius: 10,
+          borderLength: 30,
+          borderWidth: 10,
+          cutOutSize: 300,
+        ),
+      ),
+    );
+  }
+
+void _onQRViewCreated(QRViewController controller) {
+  setState(() {
+    this.controller = controller;
+  });
+  controller.scannedDataStream.listen((scanData) {
+    final donationId = int.tryParse(scanData.code ?? '');
+    if (donationId != null) {
+      Provider.of<DonationProvider>(context, listen: false)
+          .editDropOffStatus(donationId, 'Confirmed');
+    }
+    Navigator.pop(context);
+  });
+}
+
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 }
