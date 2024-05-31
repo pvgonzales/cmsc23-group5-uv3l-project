@@ -16,32 +16,51 @@ class DonationsScreen extends StatelessWidget {
     donationProvider.fetchDonations();
     return Scaffold(
       backgroundColor: Color(0xfff4f6ff),
-      body: Consumer<DonationProvider>(
-        builder: (context, donationProvider, _) {
-          if (donationProvider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (donationProvider.donations.isEmpty) {
-            return const Center(
-              child: Text('No donations found.'),
-            );
-          }
-          return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 4.0,
-              mainAxisSpacing: 4.0,
-              childAspectRatio: 0.85, // Aspect ratio for square cards
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'List of Donations',
+              style: TextStyle(
+                fontFamily: "MyFont3",
+                color: Color(0xFF212738),
+                fontWeight: FontWeight.w500,
+                fontSize: 20,
+              ),
             ),
-            itemCount: donationProvider.donations.length,
-            itemBuilder: (context, index) {
-              var donation = donationProvider.donations[index];
-              return DonationCard(donation: donation);
-            },
-          );
-        },
+          ),
+          Expanded(
+            child: Consumer<DonationProvider>(
+              builder: (context, donationProvider, _) {
+                if (donationProvider.isLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (donationProvider.donations.isEmpty) {
+                  return const Center(
+                    child: Text('No donations found.'),
+                  );
+                }
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 4.0,
+                    mainAxisSpacing: 4.0,
+                    childAspectRatio: 0.85, // Aspect ratio for square cards
+                  ),
+                  itemCount: donationProvider.donations.length,
+                  itemBuilder: (context, index) {
+                    var donation = donationProvider.donations[index];
+                    return DonationCard(donation: donation);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
