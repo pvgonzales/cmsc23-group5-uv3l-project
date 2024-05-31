@@ -83,8 +83,8 @@ class _DriveModalState extends State<DriveModal> {
 
   // Method to build the content or body depending on the functionality
   Widget _buildContent(BuildContext context) {
-    List<Organizations> orgdrivesItems =
-        context.read<OrganizationProvider>().orgdrives;
+    List<Organizations> organizations =
+        context.read<OrganizationProvider>().organizations;
     switch (widget.type) {
       case 'Delete':
         {
@@ -116,13 +116,13 @@ class _DriveModalState extends State<DriveModal> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 2,
                     ),
                     TextField(
                       controller: _formFieldName,
-                      style: TextStyle(
-                        color: const Color.fromARGB(
+                      style: const TextStyle(
+                        color: Color.fromARGB(
                             255, 255, 255, 255), // Text color of the input
                         fontSize: 14,
                         fontFamily: "MyFont1",
@@ -131,17 +131,17 @@ class _DriveModalState extends State<DriveModal> {
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         hintText: widget.index != -1
-                            ? orgdrivesItems[widget.index].name
+                            ? organizations[widget.index].name
                             : '',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                             fontFamily: "MyFont1",
                             fontStyle: FontStyle.italic),
-                        fillColor: Color(0xFF212738),
+                        fillColor: const Color(0xFF212738),
                         filled: true,
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                           const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                       ),
                     ),
                   ],
@@ -163,8 +163,8 @@ class _DriveModalState extends State<DriveModal> {
                       ),
                     ),
                     TextField(
-                      style: TextStyle(
-                        color: const Color.fromARGB(
+                      style: const TextStyle(
+                        color: Color.fromARGB(
                             255, 255, 255, 255), // Text color of the input
                         fontSize: 14,
                         fontFamily: "MyFont1",
@@ -174,17 +174,17 @@ class _DriveModalState extends State<DriveModal> {
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         hintText: widget.index != -1
-                            ? orgdrivesItems[widget.index].description
+                            ? organizations[widget.index].description
                             : '',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                             fontFamily: "MyFont1",
                             fontStyle: FontStyle.italic),
-                        fillColor: Color(0xFF212738),
+                        fillColor: const Color(0xFF212738),
                         filled: true,
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                            const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                       ),
                     ),
                   ],
@@ -243,7 +243,7 @@ class _DriveModalState extends State<DriveModal> {
         }
       },
       style: TextButton.styleFrom(
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
         fontFamily: "MyFont1",
         fontWeight: FontWeight.w900,
         fontSize: 16,
