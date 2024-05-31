@@ -43,6 +43,7 @@ class DonationApi {
           time: doc['time'],
           status: doc['status'],
           donationdrive: doc['donationdrive'],
+          proof: doc['proof'],
         );
       }).toList();
     } catch (e) {
@@ -65,6 +66,7 @@ class DonationApi {
           time: doc['time'],
           status: doc['status'],
           donationdrive: doc['donationdrive'],
+          proof: doc['proof'],
           donor: doc['donor'],
           // proof: doc['proof'] != null ? XFile(doc['proof']) : null,
         );
@@ -74,4 +76,30 @@ class DonationApi {
       return [];
     }
   }
+
+  Future<void> editDropOffStatus(int id, String status) async {
+    try {
+      QuerySnapshot querySnapshot = await donationCollection.where("id", isEqualTo: id).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot document = querySnapshot.docs.first;
+        await donationCollection.doc(document.id).update({"status": status});
+      }
+    } catch (e) {
+      print("Error updating donation status: $e");
+    }
+  }
+
+  Future<String> editDonation(int id, Map<String, dynamic> editedDonation) async {
+    try {
+      QuerySnapshot querySnapshot = await donationCollection.where("id", isEqualTo: id).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot document = querySnapshot.docs.first;
+        await donationCollection.doc(document.id).update(editedDonation);
+      }
+      return "Successfully edited Donation!";
+    } catch (e) {
+      return "Error updating donation status: $e";
+    }
+  }
+
 }
