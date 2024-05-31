@@ -171,19 +171,26 @@ class _DetailsFormFormState extends State<DetailsForm> {
             ),
           ),
           const SizedBox(height: 20),
-          if(organization == true)...[
+          if (organization == true) ...[
             IconButton(
-              onPressed: _pickImage, 
-              icon: const Icon(Icons.camera_alt_rounded)
+                onPressed: _pickImage,
+                icon: const Icon(Icons.camera_alt_rounded)),
+            const Text(
+              'Upload Photo',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF212738),
+                fontFamily: "MyFont1",
+              ),
             ),
-            const Text('Upload Photo'),
             if (_imageFile != null) ...[
-                  const SizedBox(height: 20),
-                  Image.file(
-                    File(_imageFile!.path),
-                    height: 150,
-                  ),
-                ],
+              const SizedBox(height: 20),
+              Image.file(
+                File(_imageFile!.path),
+                height: 150,
+              ),
+            ],
           ],
           const SizedBox(height: 20),
           ElevatedButton(
@@ -206,13 +213,19 @@ class _DetailsFormFormState extends State<DetailsForm> {
                   return;
                 } else {
                   // store in firebase
-                  if(organization == true) {
+                  if (organization == true) {
                     usertype = 'Organization';
                     convertedImage = await _convertImage(_imageFile!);
                   }
-                  context.read<UserAuthProvider>()
-                  .authService
-                  .signUp(fullname!, email!, username!, password!, phoneNumber!, address!, usertype, convertedImage);
+                  context.read<UserAuthProvider>().authService.signUp(
+                      fullname!,
+                      email!,
+                      username!,
+                      password!,
+                      phoneNumber!,
+                      address!,
+                      usertype,
+                      convertedImage);
                   Navigator.pushNamed(context, '/sign-in');
                 }
               }
@@ -228,18 +241,29 @@ class _DetailsFormFormState extends State<DetailsForm> {
             ),
           ),
           const SizedBox(height: 16),
-          if(organization == true) ...[
+          if (organization == true) ...[
             Text(
-                    '''By continuing, you confirm that you are a legitimate organization and agree with our Terms and Conditions. If found otherwise, you agree to be bound by our terms.''',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall,
+              '''By continuing, you confirm that you are a legitimate organization and agree with our Terms and Conditions. If found otherwise, you agree to be bound by our terms.''',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF212738),
+                fontFamily: "MyFont1",
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ],
-          if(organization == false)...[
+          if (organization == false) ...[
             Text(
               'By continuing, you confirm that you agree \nwith our Terms and Conditions',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF212738),
+                  fontFamily: "MyFont1",
+                  fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: 16),
             Row(
@@ -247,19 +271,28 @@ class _DetailsFormFormState extends State<DetailsForm> {
               children: [
                 const Text(
                   "Sign up as an organization? ",
-                  style: TextStyle(fontSize: 16),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      organization = !organization;
-                    });
-                  },
-                  child: const Text(
-                    "Click Here",
-                    style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 0, 97, 10), decoration: TextDecoration.underline),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF212738),
+                    fontFamily: "MyFont1",
                   ),
                 ),
+                GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        organization = !organization;
+                      });
+                    },
+                    child: const Text(
+                      "Click Here",
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF212738),
+                          fontFamily: "MyFont1",
+                          decoration: TextDecoration.underline),
+                    )),
               ],
             ),
           ],
