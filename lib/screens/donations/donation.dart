@@ -1,9 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
-import 'package:flutter_project/screens/donations/showqr.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -75,6 +76,17 @@ class DonationsScreen extends StatelessWidget {
 class DonationCard extends StatelessWidget {
   final Donation donation;
   const DonationCard({Key? key, required this.donation}) : super(key: key);
+
+  Future<Widget> decodeBase64ToImage(String base64Image) async {
+  try {
+    Uint8List decodedBytes = base64Decode(base64Image);
+    Image image = Image.memory(decodedBytes);
+    
+    return image;
+  } catch (e) {
+    throw Exception("Error decoding base64 to Image: $e");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -246,10 +258,23 @@ class DonationCard extends StatelessWidget {
                         ],
                       ),
                       if (donation.proof != null)
-                        Image.file(
-                          File(donation.proof!.path),
-                          height: 200,
+                      Center(
+                        child: FutureBuilder<Widget>(
+                          future: decodeBase64ToImage(donation.proof!),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return SizedBox(
+                                height: 150,
+                                child: snapshot.data,
+                              );
+                            }
+                          },
                         ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
