@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/screens/donations/showqr.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +12,14 @@ class DonationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserAuthProvider userProvider =
+        Provider.of<UserAuthProvider>(context, listen: false);
     final DonationProvider donationProvider =
         Provider.of<DonationProvider>(context, listen: false);
-    donationProvider.fetchDonations();
+
+    String? username = userProvider.currentUsername;
+    donationProvider.fetchCurrentUserDonations(username!);
+    
     return Scaffold(
       backgroundColor: Color(0xfff4f6ff),
       body: Column(

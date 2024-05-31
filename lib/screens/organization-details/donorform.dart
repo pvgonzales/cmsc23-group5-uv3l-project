@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -84,6 +85,8 @@ class _DonorFormFormState extends State<DonorForm> {
 
   @override
   Widget build(BuildContext context) {
+    final UserAuthProvider userProvider = 
+        Provider.of<UserAuthProvider>(context);
     final DonationProvider donationProvider =
         Provider.of<DonationProvider>(context);
     return Container(
@@ -440,7 +443,8 @@ class _DonorFormFormState extends State<DonorForm> {
                       date: _dateValue.text,
                       time: _timeValue.text,
                       proof: _imageFile,
-                      status: "Pending");
+                      status: "Pending",
+                      donor: userProvider.currentUsername);
                   // var donationProvider =
                   //     Provider.of<DonationProvider>(context, listen: false);
                   donationProvider.addDonation(newDonation);
