@@ -43,7 +43,7 @@ class FirebaseAuthApi {
     }
   }
 
-  Future<String> signUp(String fullName, String email, String username, String password, String contactNumber, String address) async {
+  Future<String> signUp(String fullName, String email, String username, String password, String contactNumber, String address, String type, String? image) async {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
       await FirebaseFirestore.instance.collection("users").doc(userCredential.user!.uid).set({
@@ -53,6 +53,8 @@ class FirebaseAuthApi {
         "username": username,
         "contact": contactNumber,
         "address": address,
+        "usertype": type,
+        "photo": image
       });
       print("User created: ${userCredential.user!.uid}");
       return "Success";
