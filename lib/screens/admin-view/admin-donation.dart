@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_project/api/auth_api.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/screens/admin-view/navbar.dart';
@@ -13,6 +14,14 @@ class DonationScreenAdmin extends StatefulWidget {
 class _DonationScreenAdminState extends State<DonationScreenAdmin> {
   final TextEditingController _searchController = TextEditingController();
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<DonationProvider>(context, listen: false).fetchDonations();
+  }
+
+  final FirebaseAuthApi authApi = FirebaseAuthApi();
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +44,15 @@ class _DonationScreenAdminState extends State<DonationScreenAdmin> {
               ),
             ),
             const SizedBox(height: 10),
-            Builder(
-              builder: (context) {
-                final donationProvider =
-                    Provider.of<DonationProvider>(context, listen: false);
-                final List<Donation> donations = donationProvider.donations;
+            Consumer<DonationProvider>(
+              builder: (context, provider, child) {
+                List<Donation> donations = provider.donations;
+                if (provider.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (donations.isEmpty) {
+                  return Center(child: Text('No donations found.'));
+                }
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -189,6 +202,6 @@ class _DonationScreenAdminState extends State<DonationScreenAdmin> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-    }); //commit try
+    });
   }
 }
