@@ -1,10 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
+import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project/model/user_model.dart';
 
-class OrgProfile extends StatelessWidget {
-  const OrgProfile({super.key});
+class OrgProfile extends StatefulWidget {
+  final bool? initialStatus;
+  const OrgProfile({super.key, this.initialStatus});
+
+  @override
+  State<OrgProfile> createState() => _OrgProfileState();
+}
+
+class _OrgProfileState extends State<OrgProfile> {
+  late bool status;
+
+  @override
+  void initState() {
+    super.initState();
+    //status = widget.initialStatus!; // CORRECT APPROACH FOR US TO GET THE CURRENT STATUS OF AN ORG (FIREBASE)
+    status = true;
+  }
+
+  final MaterialStateProperty<Icon?> thumbIcon =
+      MaterialStateProperty.resolveWith<Icon?>(
+    (Set<MaterialState> states) {
+      if (states.contains(MaterialState.selected)) {
+        return const Icon(Icons.check);
+      }
+      return const Icon(Icons.close);
+    },
+  );
 
   void _onItemTapped(BuildContext context, int index) {
     switch (index) {
@@ -31,8 +57,8 @@ class OrgProfile extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF212738),
-        title: Column(
+        backgroundColor: const Color(0xFF212738),
+        title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 30),
@@ -68,20 +94,20 @@ class OrgProfile extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 40, bottom: 20, left: 30, right: 30),
+        padding: const EdgeInsets.only(top: 40, bottom: 20, left: 30, right: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               backgroundColor: Colors.transparent,
               radius: 60,
               backgroundImage: AssetImage('assets/images/orglogo3.png'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Full Name:',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -91,18 +117,18 @@ class OrgProfile extends StatelessWidget {
                 ),
                 Text(
                   userModel.fullname ?? 'N/A',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     fontFamily: "MyFont1",
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Username:',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -112,18 +138,18 @@ class OrgProfile extends StatelessWidget {
                 ),
                 Text(
                   userModel.username ?? 'N/A',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     fontFamily: "MyFont1",
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Phone Number:',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -133,18 +159,18 @@ class OrgProfile extends StatelessWidget {
                 ),
                 Text(
                   userModel.phoneNumber ?? 'N/A',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     fontFamily: "MyFont1",
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Address:',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -154,14 +180,35 @@ class OrgProfile extends StatelessWidget {
                 ),
                 Text(
                   userModel.address ?? 'N/A',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     fontFamily: "MyFont1",
                   ),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: Column(
+                children: [
+                  const Text('Status for accepting donations'),
+                  Switch(
+                    thumbIcon: thumbIcon,
+                    value: status,
+                    onChanged: (bool value) {
+                      setState(() {
+                        status = value;
+                      });
+                      Provider.of<OrganizationProvider>(context, listen: false)
+                      .updateOrganizationStatus(3, status); // 3 is a hardcoded value, it must be the id of the 'organization' user
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
               height: 20,
             ),
             Center(
@@ -170,7 +217,7 @@ class OrgProfile extends StatelessWidget {
                   context.read<UserAuthProvider>().authService.signOut();
                   Navigator.pushNamed(context, "/");
                 },
-                child: Text(
+                child: const Text(
                   'Logout',
                   style: TextStyle(
                     color: Colors.red,
@@ -184,7 +231,7 @@ class OrgProfile extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF212738),
+        backgroundColor: const Color(0xFF212738),
 
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -202,7 +249,7 @@ class OrgProfile extends StatelessWidget {
         ],
         currentIndex: 2, // Set the current index to indicate the profile screen
         onTap: (index) => _onItemTapped(context, index),
-        selectedItemColor: Color.fromARGB(255, 243, 164, 160),
+        selectedItemColor: const Color.fromARGB(255, 243, 164, 160),
         unselectedItemColor: Colors.white,
       ),
     );
