@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
@@ -80,6 +82,16 @@ class _DonorFormFormState extends State<DonorForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Camera permission denied')),
       );
+    }
+  }
+
+  Future<String> _convertImage(XFile image) async {
+    try {
+      final bytes = await image.readAsBytes();
+      String base64Image = base64Encode(bytes);
+      return (base64Image);
+    } catch (e) {
+      return '$e';
     }
   }
 
@@ -424,7 +436,7 @@ class _DonorFormFormState extends State<DonorForm> {
                 : Container(),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   int newDonationId = DateTime.now().millisecondsSinceEpoch;
@@ -434,6 +446,7 @@ class _DonorFormFormState extends State<DonorForm> {
                   if (cash!) selectedItems.add('Cash');
                   if (necessities!) selectedItems.add('Necessities');
                   if (others!) selectedItems.add('Others');
+                  String convertedImage = await _convertImage(_imageFile!);
                   Donation newDonation = Donation(
                       id: newDonationId,
                       items: selectedItems,
@@ -442,7 +455,7 @@ class _DonorFormFormState extends State<DonorForm> {
                       phoneNum: logistics == 'Pick up' ? phoneNum : null,
                       date: _dateValue.text,
                       time: _timeValue.text,
-                      proof: _imageFile,
+                      proof: convertedImage,
                       status: "Pending",
                       donor: userProvider.currentUsername);
                   // var donationProvider =
