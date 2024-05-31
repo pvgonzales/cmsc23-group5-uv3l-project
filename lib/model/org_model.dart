@@ -1,10 +1,10 @@
 class Organizations {
-  final int id;
-  final String name;
-  final String description;
-  final String? image;
-  final bool? status;
-  final String type;
+  int id;
+  String name;
+  String description;
+  String? image;
+  bool? status;
+  String type;
 
   Organizations({
     required this.id,
