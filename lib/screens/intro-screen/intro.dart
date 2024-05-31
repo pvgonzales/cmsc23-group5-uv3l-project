@@ -127,7 +127,7 @@ class _IntroScreenState extends State<IntroScreen> {
                           ),
                         ),
                       ),
-                      const Spacer(flex: 3),
+                      const Spacer(flex: 1),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/sign-up');

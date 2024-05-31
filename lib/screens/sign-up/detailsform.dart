@@ -20,7 +20,8 @@ class _DetailsFormFormState extends State<DetailsForm> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final email = arguments['email'] as String?;
     final password = arguments['password'] as String?;
 
@@ -41,11 +42,19 @@ class _DetailsFormFormState extends State<DetailsForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Full Name",
               hintText: "Enter your full name",
               floatingLabelBehavior: FloatingLabelBehavior.always,
               suffixIcon: Icon(Icons.person),
+              filled: true,
+              fillColor:
+                  Colors.white, // Change to your desired background color
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                    10.0), // Change to your desired border radius
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -58,11 +67,19 @@ class _DetailsFormFormState extends State<DetailsForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Username",
               hintText: "Enter your username",
               floatingLabelBehavior: FloatingLabelBehavior.always,
               suffixIcon: Icon(Icons.person),
+              filled: true,
+              fillColor:
+                  Colors.white, // Change to your desired background color
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                    10.0), // Change to your desired border radius
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -78,11 +95,19 @@ class _DetailsFormFormState extends State<DetailsForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Phone Number",
               hintText: "Enter your phone number",
               floatingLabelBehavior: FloatingLabelBehavior.always,
               suffixIcon: Icon(Icons.phone),
+              filled: true,
+              fillColor:
+                  Colors.white, // Change to your desired background color
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                    10.0), // Change to your desired border radius
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -97,19 +122,31 @@ class _DetailsFormFormState extends State<DetailsForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
-                labelText: "Address",
-                hintText: "Enter your address",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                suffixIcon: Icon(Icons.pin_drop)),
+            decoration: InputDecoration(
+              labelText: "Address",
+              hintText: "Enter your address",
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              suffixIcon: Icon(Icons.pin_drop), filled: true,
+              fillColor:
+                  Colors.white, // Change to your desired background color
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                    10.0), // Change to your desired border radius
+                borderSide: BorderSide.none,
+              ),
+            ),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF212738),
+            ),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
 
-                bool usernameExists = await userAuthProvider.isUsernameAlreadyInUse(username!);
+                bool usernameExists =
+                    await userAuthProvider.isUsernameAlreadyInUse(username!);
                 if (usernameExists) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -128,14 +165,21 @@ class _DetailsFormFormState extends State<DetailsForm> {
                   //   address: address,
                   // );
                   // store in firebase
-                  context.read<UserAuthProvider>()
-                  .authService
-                  .signUp(fullname!, email!, username!, password!, phoneNumber!, address!);
+                  context.read<UserAuthProvider>().authService.signUp(fullname!,
+                      email!, username!, password!, phoneNumber!, address!);
                   Navigator.pushNamed(context, '/sign-in');
                 }
               }
             },
-            child: const Text("Continue"),
+            child: const Text(
+              "Continue",
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+                fontFamily: "MyFont1",
+              ),
+            ),
           ),
         ],
       ),
