@@ -71,6 +71,30 @@ class DonationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> fetchCurrentUserDonations(String username) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      List<Donation> fetchedDonations = await donationApi.fetchDonationsByUsername(username);
+      _donations = fetchedDonations;
+    } catch (e) {
+      print(e);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Donation? findDonationById(String id) {
+    for (var donation in _donations) {
+      if (donation.id == id) {
+        return donation;
+      }
+    }
+    return null;
+  }
+
   void editDropOffStatus(int id, String status) {
     for (var donation in donations) {
       if (donation.id == id) {
