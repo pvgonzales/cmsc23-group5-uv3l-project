@@ -104,4 +104,16 @@ class DonationProvider extends ChangeNotifier {
       }
     }
   }
+
+  void editDonation(int id, Donation newDonation) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await donationApi.editDonation(id, newDonation.toJson(newDonation));
+    } catch (e) {
+      return;
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
 }
