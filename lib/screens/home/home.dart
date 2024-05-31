@@ -25,132 +25,130 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<OrganizationProvider>(
-      builder: (context, provider, _) {
-        List<Organizations> orgdrivesItems = provider.orgdrives;
-        return Scaffold(
-          backgroundColor: Color(0xfff4f6ff),
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverAppBar(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                automaticallyImplyLeading: false,
-                backgroundColor: Color(0xFF212738),
-                expandedHeight: 200.0,
-                floating: false,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: EdgeInsetsDirectional.only(start: 16, bottom: 90),
-                  title: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: AssetImage(
-                            "assets/images/image1.png"), // Replace with your image path
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "Welcome",
-                            style: TextStyle(
-                              fontFamily: "MyFont1",
-                              color: Color.fromARGB(255, 248, 249, 252),
-                              fontWeight: FontWeight.w900,
-                              fontSize: 14,
-                            ),
+    return Consumer<OrganizationProvider>(builder: (context, provider, _) {
+      List<Organizations> orgdrivesItems = provider.orgdrives;
+      return Scaffold(
+        backgroundColor: Color(0xfff4f6ff),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              automaticallyImplyLeading: false,
+              backgroundColor: Color(0xFF212738),
+              expandedHeight: 200.0,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: EdgeInsetsDirectional.only(start: 16, bottom: 90),
+                title: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage(
+                          "assets/images/image1.png"), // Replace with your image path
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Welcome",
+                          style: TextStyle(
+                            fontFamily: "MyFont1",
+                            color: Color.fromARGB(255, 248, 249, 252),
+                            fontWeight: FontWeight.w900,
+                            fontSize: 14,
                           ),
-                          SizedBox(height: 0), // Adjust the spacing here
-                          Text(
-                            "Dear Donor",
-                            style: TextStyle(
-                              fontFamily: "MyFont1",
-                              color: Colors.white,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Adjust the spacing between the title and the image
-                    ],
-                  ),
-                ),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(55.0),
-                  child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
-                      child: Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        child: TextField(
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Search organizations',
-                            prefixIcon: Icon(Icons.search),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 8.0), // Adjust padding here
-
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          onChanged: (value) {
-                            // Handle search logic here
-                          },
                         ),
-                      )),
+                        SizedBox(height: 0), // Adjust the spacing here
+                        Text(
+                          "Dear Donor",
+                          style: TextStyle(
+                            fontFamily: "MyFont1",
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Adjust the spacing between the title and the image
+                  ],
                 ),
               ),
-            ],
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.only(left: 7, right: 7, top: 0),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: _selectedIndex == 0
-                      ? _buildHomeContent(orgdrivesItems)
-                      : _selectedIndex == 1
-                          ? DonationsScreen()
-                          : ProfileScreen(),
-                ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(55.0),
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 28),
+                    child: Container(
+                      height: 40,
+                      alignment: Alignment.center,
+                      child: TextField(
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Search organizations',
+                          prefixIcon: Icon(Icons.search),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 8.0), // Adjust padding here
+
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          // Handle search logic here
+                        },
+                      ),
+                    )),
+              ),
+            ),
+          ],
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(left: 7, right: 7, top: 0),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: _selectedIndex == 0
+                    ? _buildHomeContent(orgdrivesItems)
+                    : _selectedIndex == 1
+                        ? DonationsScreen()
+                        : ProfileScreen(),
               ),
             ),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Color(0xFF212738),
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: 'My Donations',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Color.fromARGB(255, 243, 164, 160),
-            onTap: _onItemTapped,
-            unselectedItemColor: Colors.white,
-          ),
-        );
-      }
-    );
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Color(0xFF212738),
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'My Donations',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Color.fromARGB(255, 243, 164, 160),
+          onTap: _onItemTapped,
+          unselectedItemColor: Colors.white,
+        ),
+      );
+    });
   }
 
   Widget _buildHomeContent(List<Organizations> orgdrivesItems) {
@@ -210,6 +208,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
+        ),
+        SizedBox(
+          height: 8,
         ),
         Expanded(
           child: ListView.builder(

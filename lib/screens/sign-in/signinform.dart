@@ -39,11 +39,18 @@ class _SignInFormState extends State<SignInForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
-                labelText: "Email",
-                hintText: "Enter your email",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                suffixIcon: Icon(Icons.email)),
+            decoration: InputDecoration(
+              labelText: "Email",
+              hintText: "Enter your email",
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              suffixIcon: Icon(Icons.email),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide.none,
+              ),
+            ),
           ),
           const SizedBox(height: 20),
           TextFormField(
@@ -60,21 +67,27 @@ class _SignInFormState extends State<SignInForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Password",
               hintText: "Enter your password",
               floatingLabelBehavior: FloatingLabelBehavior.always,
               suffixIcon: Icon(Icons.lock_rounded),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide.none,
+              ),
             ),
           ),
           const SizedBox(height: 20),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Checkbox(
                 value: remember,
-                activeColor: const Color.fromARGB(255, 0, 97, 10),
+                activeColor: const Color(0xFF212738),
                 onChanged: (value) {
-                  // ADD USER AUTH FUNCTIONALITIES HERE
                   setState(() {
                     remember = value;
                   });
@@ -93,6 +106,9 @@ class _SignInFormState extends State<SignInForm> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF212738),
+            ),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
@@ -104,9 +120,7 @@ class _SignInFormState extends State<SignInForm> {
 
                 if (message == "Success") {
                   Navigator.pushReplacementNamed(
-                      context,
-                      widget
-                          .destinationRoute); // Navigate to the specified destination
+                      context, widget.destinationRoute);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -117,7 +131,15 @@ class _SignInFormState extends State<SignInForm> {
                 }
               }
             },
-            child: const Text("Continue"),
+            child: const Text(
+              "Continue",
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+                fontFamily: "MyFont1",
+              ),
+            ),
           ),
         ],
       ),

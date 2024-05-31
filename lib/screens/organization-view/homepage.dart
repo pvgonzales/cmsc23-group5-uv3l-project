@@ -19,6 +19,12 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
 
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<DonationProvider>(context, listen: false).fetchDonations();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -35,6 +41,7 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
       }
     });
   }
+
   final FirebaseAuthApi authApi = FirebaseAuthApi();
 
   @override
@@ -156,9 +163,37 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 18,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 23),
+                child: Row(
+                  children: [
+                    Text(
+                      "Donations",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "MyFont1",
+                        color: Color(0xFF212738),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
               Consumer<DonationProvider>(
                 builder: (context, provider, child) {
                   List<Donation> donations = provider.donations;
+                  if (provider.isLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (donations.isEmpty) {
+                    return Center(child: Text('No donations found.'));
+                  }
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
@@ -173,18 +208,27 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ListTile(
-                          title: Text('${donations[index].id}'),
+                          title: Text(
+                            '${donations[index].id}',
+                            style: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Color(0xFF212738),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 13,
+                            ),
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
                                 onPressed: () {
                                   Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => DonationStatus(donation: donations[index]),
-                                        ),
-                                      );
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DonationStatus(
+                                          donation: donations[index]),
+                                    ),
+                                  );
                                 },
                                 icon: const Icon(Icons.remove_red_eye),
                               ),
@@ -201,7 +245,7 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()async{
+        onPressed: () async {
           await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => QRScanner()),
@@ -210,6 +254,7 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
         child: const Icon(Icons.qr_code_scanner_rounded),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF212738),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -225,8 +270,9 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Color.fromARGB(255, 243, 164, 160),
         onTap: _onItemTapped,
+        unselectedItemColor: Colors.white,
       ),
     );
   }
@@ -234,14 +280,14 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
 
 class QRScanner extends StatefulWidget {
   const QRScanner({super.key});
-  
+
   @override
   State<StatefulWidget> createState() => _QRScannerState();
 }
 
 class _QRScannerState extends State<QRScanner> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller; 
+  QRViewController? controller;
 
   @override
   void reassemble() {
@@ -271,20 +317,19 @@ class _QRScannerState extends State<QRScanner> {
     );
   }
 
-void _onQRViewCreated(QRViewController controller) {
-  setState(() {
-    this.controller = controller;
-  });
-  controller.scannedDataStream.listen((scanData) {
-    final donationId = int.tryParse(scanData.code ?? '');
-    if (donationId != null) {
-      Provider.of<DonationProvider>(context, listen: false)
-          .editDropOffStatus(donationId, 'Confirmed');
-    }
-    Navigator.pop(context);
-  });
-}
-
+  void _onQRViewCreated(QRViewController controller) {
+    setState(() {
+      this.controller = controller;
+    });
+    controller.scannedDataStream.listen((scanData) {
+      final donationId = int.tryParse(scanData.code ?? '');
+      if (donationId != null) {
+        Provider.of<DonationProvider>(context, listen: false)
+            .editDropOffStatus(donationId, 'Confirmed');
+      }
+      Navigator.pop(context);
+    });
+  }
 
   @override
   void dispose() {

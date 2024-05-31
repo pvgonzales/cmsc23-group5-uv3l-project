@@ -32,10 +32,21 @@ class _DonorFormFormState extends State<DonorForm> {
 
   Future<void> _selectDate() async {
     DateTime? pickDate = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now().add(const Duration(days: 1)),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2100));
+      context: context,
+      initialDate: DateTime.now().add(const Duration(days: 1)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light().copyWith(
+              primary: Color(0xFF212738), // Background color
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
 
     if (pickDate != null) {
       setState(() {
@@ -45,8 +56,8 @@ class _DonorFormFormState extends State<DonorForm> {
   }
 
   Future<void> _selectTime() async {
-    TimeOfDay? pickTime =
-        await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 8, minute: 0));
+    TimeOfDay? pickTime = await showTimePicker(
+        context: context, initialTime: const TimeOfDay(hour: 8, minute: 0));
     if (pickTime != null) {
       setState(() {
         _timeValue.text = pickTime.format(context).toString();
@@ -54,7 +65,7 @@ class _DonorFormFormState extends State<DonorForm> {
     }
   }
 
-    Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     final PermissionStatus status = await Permission.camera.request();
     if (status == PermissionStatus.granted) {
       final ImagePicker picker = ImagePicker();
@@ -73,262 +84,382 @@ class _DonorFormFormState extends State<DonorForm> {
 
   @override
   Widget build(BuildContext context) {
-    final DonationProvider donationProvider = Provider.of<DonationProvider>(context);
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          const Center(
-            child: Text('Donation Items',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  height: 1.5,
-                )),
-          ),
-          CheckboxListTile(
-            title: const Text('Food'),
-            value: food,
-            onChanged: (newValue) {
-              setState(() {
-                food = newValue;
-              });
-            },
-            activeColor: const Color.fromARGB(255, 112, 0, 0),
-            checkColor: Colors.white,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          CheckboxListTile(
-            title: const Text('Clothes'),
-            value: clothes,
-            onChanged: (newValue) {
-              setState(() {
-                clothes = newValue;
-              });
-            },
-            activeColor: const Color.fromARGB(255, 112, 0, 0),
-            checkColor: Colors.white,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          CheckboxListTile(
-            title: const Text('Cash'),
-            value: cash,
-            onChanged: (newValue) {
-              setState(() {
-                cash = newValue;
-              });
-            },
-            activeColor: const Color.fromARGB(255, 112, 0, 0),
-            checkColor: Colors.white,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          CheckboxListTile(
-            title: const Text('Necessities'),
-            value: necessities,
-            onChanged: (newValue) {
-              setState(() {
-                necessities = newValue;
-              });
-            },
-            activeColor: const Color.fromARGB(255, 112, 0, 0),
-            checkColor: Colors.white,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          CheckboxListTile(
-            title: const Text('Others'),
-            value: others,
-            onChanged: (newValue) {
-              setState(() {
-                others = newValue;
-              });
-            },
-            activeColor: const Color.fromARGB(255, 112, 0, 0),
-            checkColor: Colors.white,
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          const Center(
-            child: Text('Logistics',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  height: 1.5,
-                )),
-          ),
-          DropdownButton(
-              value: logistics,
-              items: const [
-                DropdownMenuItem<String>(
-                    value: 'Pick up', child: Text('Pick up')),
-                DropdownMenuItem<String>(
-                    value: 'Drop-off', child: Text('Drop-off'))
-              ],
-              icon: const Icon(Icons.arrow_drop_down),
-              style: const TextStyle(color: Colors.black),
-              underline: Container(
-                color: Colors.white,
-                height: 2,
-              ),
-              onChanged: (String? newValue) {
-                setState(() {
-                  logistics = newValue!;
-                });
-              }),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            onSaved: (newValue) => weight = newValue,
-            onChanged: (value) {
-              return;
-            },
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "Please enter the weight of the items";
-              }
-              return null;
-            },
-            decoration: const InputDecoration(
-              labelText: "Weight of Items",
-              hintText: "Enter weight in kilograms",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: Icon(Icons.monitor_weight),
+    final DonationProvider donationProvider =
+        Provider.of<DonationProvider>(context);
+    return Container(
+      padding: EdgeInsets.all(20),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            const Center(
+              child: Text('Donation Items',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF212738),
+                      fontFamily: "MyFont1",
+                      fontStyle: FontStyle.italic)),
             ),
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _dateValue,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "Please select a date";
-              }
-              return null;
-            },
-            decoration: const InputDecoration(
-                labelText: 'Pick a date',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 112, 0, 0)))),
-            readOnly: true,
-            onTap: () {
-              _selectDate();
-            },
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _timeValue,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "Please select a time";
-              }
-              return null;
-            },
-            decoration: const InputDecoration(
-                labelText: 'Pick time',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 112, 0, 0)))),
-            readOnly: true,
-            onTap: () {
-              _selectTime();
-            },
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: IconButton(
-                onPressed: _pickImage,
-                icon: const Icon(Icons.camera_alt)
+            CheckboxListTile(
+              title: const Text('Food',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF212738),
+                    fontFamily: "MyFont1",
+                  )),
+              value: food,
+              onChanged: (newValue) {
+                setState(() {
+                  food = newValue;
+                });
+              },
+              activeColor: Color.fromARGB(255, 255, 227, 225),
+              checkColor: Colors.white,
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('Clothes',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF212738),
+                    fontFamily: "MyFont1",
+                  )),
+              value: clothes,
+              onChanged: (newValue) {
+                setState(() {
+                  clothes = newValue;
+                });
+              },
+              activeColor: Color.fromARGB(255, 255, 227, 225),
+              checkColor: Colors.white,
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('Cash',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF212738),
+                    fontFamily: "MyFont1",
+                  )),
+              value: cash,
+              onChanged: (newValue) {
+                setState(() {
+                  cash = newValue;
+                });
+              },
+              activeColor: Color.fromARGB(255, 255, 227, 225),
+              checkColor: Colors.white,
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('Necessities',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF212738),
+                    fontFamily: "MyFont1",
+                  )),
+              value: necessities,
+              onChanged: (newValue) {
+                setState(() {
+                  necessities = newValue;
+                });
+              },
+              activeColor: Color.fromARGB(255, 255, 227, 225),
+              checkColor: Colors.white,
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('Others',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF212738),
+                    fontFamily: "MyFont1",
+                  )),
+              value: others,
+              onChanged: (newValue) {
+                setState(() {
+                  others = newValue;
+                });
+              },
+              activeColor: Color.fromARGB(255, 255, 227, 225),
+              checkColor: Colors.white,
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            const Center(
+              child: Text('Logistics',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF212738),
+                      height: 1.5,
+                      fontFamily: "MyFont1",
+                      fontStyle: FontStyle.italic)),
+            ),
+            DropdownButton(
+                dropdownColor: Color.fromARGB(255, 255, 237, 236),
+                borderRadius: BorderRadius.circular(20),
+                value: logistics,
+                underline: Container(
+                  height: 1,
+                  color: Color(0xFF212738),
+                ),
+                items: const [
+                  DropdownMenuItem<String>(
+                      value: 'Pick up',
+                      child: Text(
+                        'Pick up',
+                        style: TextStyle(
+                          fontFamily: "MyFont1",
+                          color: Color(0xFF212738),
+                          fontSize: 13,
+                        ),
+                      )),
+                  DropdownMenuItem<String>(
+                      value: 'Drop-off',
+                      child: Text(
+                        'Drop-off',
+                        style: TextStyle(
+                          fontFamily: "MyFont1",
+                          color: Color(0xFF212738),
+                          fontSize: 13,
+                        ),
+                      ))
+                ],
+                icon: const Icon(Icons.arrow_drop_down),
+                style: const TextStyle(color: Colors.black),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    logistics = newValue!;
+                  });
+                }),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              onSaved: (newValue) => weight = newValue,
+              onChanged: (value) {
+                return;
+              },
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Please enter the weight of the items";
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                labelText: "Weight of Items",
+                labelStyle: TextStyle(
+                  fontFamily: "MyFont1",
+                  color: Color(0xFF212738),
+                  fontSize: 14,
+                ),
+                hintText: "Enter weight in kilograms",
+                hintStyle: TextStyle(
+                  fontFamily: "MyFont1",
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                suffixIcon: Icon(Icons.monitor_weight),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFF212738), // Change the color here
+                    width: 2.0, // Change the thickness here
+                  ),
+                ),
               ),
-          ),
-          const Text('Upload Photo Proof'),
-          const SizedBox(height: 20),
-          _imageFile != null ? 
-              Image.file(
-                File(_imageFile!.path),
-                height: 200,
-              ) : const SizedBox(height: 20),
-          logistics == 'Pick up'
-              ? Column(
-                  children: [
-                    TextFormField(
-                      onSaved: (newValue) => address = newValue,
-                      onChanged: (value) {
-                        return;
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter your address";
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                          labelText: "Address",
-                          hintText: "Enter your address",
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          suffixIcon: Icon(Icons.pin_drop)),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      keyboardType: TextInputType.phone,
-                      onSaved: (newValue) => phoneNum = newValue,
-                      onChanged: (value) {
-                        return;
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter your phone number";
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                          labelText: "Phone Number",
-                          hintText: "Enter your phone number",
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          suffixIcon: Icon(Icons.phone)),
-                    ),
-                  ],
-                )
-              : Container(),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                int newDonationId = DateTime.now().millisecondsSinceEpoch;
-                List<String> selectedItems = [];
-                if (food!) selectedItems.add('Food');
-                if (clothes!) selectedItems.add('Clothes');
-                if (cash!) selectedItems.add('Cash');
-                if (necessities!) selectedItems.add('Necessities');
-                if (others!) selectedItems.add('Others');
-                Donation newDonation = Donation(
-                  id: newDonationId,
-                  items: selectedItems,
-                  logistics: logistics,
-                  address: logistics == 'Pick up' ? address : null,
-                  phoneNum: logistics == 'Pick up' ? phoneNum : null,
-                  date: _dateValue.text,
-                  time: _timeValue.text,
-                  proof: _imageFile,
-                  status: "Pending"
-                );
-                // var donationProvider =
-                //     Provider.of<DonationProvider>(context, listen: false);
-                donationProvider.addDonation(newDonation);
-                // donationProvider.fetchDonations();
-                Navigator.pop(
-                    context, 'Donation submitted! Kindly wait for approval.');
-              }
-            },
-            child: const Text("Submit"),
-          ),
-        ],
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _dateValue,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Please select a date";
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                  labelText: 'Pick a date',
+                  labelStyle: TextStyle(
+                    fontFamily: "MyFont1",
+                    color: Color(0xFF212738),
+                    fontSize: 14,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  prefixIcon: Icon(Icons.calendar_today),
+                  enabledBorder:
+                      OutlineInputBorder(borderSide: BorderSide.none),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                    color: Color(0xFF212738),
+                  ))),
+              readOnly: true,
+              onTap: () {
+                _selectDate();
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _timeValue,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Please select a time";
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                  labelText: 'Pick time',
+                  labelStyle: TextStyle(
+                    fontFamily: "MyFont1",
+                    color: Color(0xFF212738),
+                    fontSize: 14,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  prefixIcon: Icon(Icons.calendar_today),
+                  enabledBorder:
+                      OutlineInputBorder(borderSide: BorderSide.none),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                    color: Color(0xFF212738),
+                  ))),
+              readOnly: true,
+              onTap: () {
+                _selectTime();
+              },
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: IconButton(
+                  onPressed: _pickImage, icon: const Icon(Icons.camera_alt)),
+            ),
+            const Text(
+              'Upload Photo Proof',
+              style: TextStyle(
+                fontFamily: "MyFont1",
+                color: Color(0xFF212738),
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 20),
+            _imageFile != null
+                ? Image.file(
+                    File(_imageFile!.path),
+                    height: 200,
+                  )
+                : const SizedBox(height: 20),
+            logistics == 'Pick up'
+                ? Column(
+                    children: [
+                      TextFormField(
+                        onSaved: (newValue) => address = newValue,
+                        onChanged: (value) {
+                          return;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter your address";
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            labelText: "Address",
+                            labelStyle: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Color(0xFF212738),
+                              fontSize: 14,
+                            ),
+                            hintText: "Enter your address",
+                            hintStyle: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Colors.grey,
+                              fontSize: 14,
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            suffixIcon: Icon(Icons.pin_drop)),
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        keyboardType: TextInputType.phone,
+                        onSaved: (newValue) => phoneNum = newValue,
+                        onChanged: (value) {
+                          return;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter your phone number";
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            labelText: "Phone Number",
+                            labelStyle: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Color(0xFF212738),
+                              fontSize: 14,
+                            ),
+                            hintText: "Enter your phone number",
+                            hintStyle: TextStyle(
+                              fontFamily: "MyFont1",
+                              color: Colors.grey,
+                              fontSize: 14,
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            suffixIcon: Icon(Icons.phone)),
+                      ),
+                    ],
+                  )
+                : Container(),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  int newDonationId = DateTime.now().millisecondsSinceEpoch;
+                  List<String> selectedItems = [];
+                  if (food!) selectedItems.add('Food');
+                  if (clothes!) selectedItems.add('Clothes');
+                  if (cash!) selectedItems.add('Cash');
+                  if (necessities!) selectedItems.add('Necessities');
+                  if (others!) selectedItems.add('Others');
+                  Donation newDonation = Donation(
+                      id: newDonationId,
+                      items: selectedItems,
+                      logistics: logistics,
+                      address: logistics == 'Pick up' ? address : null,
+                      phoneNum: logistics == 'Pick up' ? phoneNum : null,
+                      date: _dateValue.text,
+                      time: _timeValue.text,
+                      proof: _imageFile,
+                      status: "Pending");
+                  // var donationProvider =
+                  //     Provider.of<DonationProvider>(context, listen: false);
+                  donationProvider.addDonation(newDonation);
+                  // donationProvider.fetchDonations();
+                  Navigator.pop(
+                      context, 'Donation submitted! Kindly wait for approval.');
+                }
+              },
+              child: const Text(
+                "Submit",
+                style: TextStyle(
+                  fontFamily: "MyFont1",
+                  color: Color(0xFF212738),
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

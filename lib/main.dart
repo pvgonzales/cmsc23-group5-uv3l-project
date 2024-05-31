@@ -6,6 +6,8 @@ import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
+import 'package:flutter_project/screens/admin-view/admin-donation.dart';
+import 'package:flutter_project/screens/admin-view/admin-donors.dart';
 import 'package:flutter_project/screens/admin-view/admin-home.dart';
 import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
@@ -61,10 +63,9 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Elbi Donation System',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color.fromARGB(255, 0, 97, 10)),
             useMaterial3: true,
           ),
+          initialRoute: '/',
           onGenerateRoute: (setting) {
             if (setting.name == '/') {
               return MaterialPageRoute(
@@ -108,11 +109,18 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) => const OrgLoginScreen());
             } else if (setting.name == '/org-signup') {
-              return MaterialPageRoute(builder: (context) => const OrgSignUpScreen());
+              return MaterialPageRoute(
+                  builder: (context) => const OrgSignUpScreen());
             } else if (setting.name == '/org-profile') {
-              return MaterialPageRoute(builder: (context) => const OrgProfile());
+              return MaterialPageRoute(builder: (context) => OrgProfile());
+            } else if (setting.name == '/admin-donation') {
+              return MaterialPageRoute(
+                  builder: (context) => DonationScreenAdmin());
+            } else if (setting.name == '/admin-donors') {
+              return MaterialPageRoute(builder: (context) => DonorsScreen());
             } else if (setting.name == '/donation-drives') {
-              return MaterialPageRoute(builder: (context) => const DonationDriveScreen());
+              return MaterialPageRoute(
+                  builder: (context) => const DonationDriveScreen());
             } else {
               return MaterialPageRoute(
                   builder: (context) => const Placeholder());

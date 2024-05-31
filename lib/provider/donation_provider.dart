@@ -80,5 +80,4 @@ class DonationProvider extends ChangeNotifier {
       }
     }
   }
-
 }
