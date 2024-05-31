@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -23,6 +25,7 @@ class _DonationStatusState extends State<DonationStatus> {
   XFile? _imageFile;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
   String? _selectedDrive;
+  String? convertedImage;
 
   @override
   void initState() {
@@ -80,6 +83,8 @@ class _DonationStatusState extends State<DonationStatus> {
           }
         },
       );
+    } else {
+      ("SMS permissions not granted.");
     }
   }
 
@@ -103,13 +108,35 @@ class _DonationStatusState extends State<DonationStatus> {
     );
   }
 
-  void _submit() {
+Future<String> _convertImage(XFile image) async {
+    try {
+      final bytes = await image.readAsBytes();
+      String base64Image = base64Encode(bytes);
+      return (base64Image);
+    } catch (e) {
+      return '$e';
+    }
+  }
+
+Future<Widget> decodeBase64ToImage(String base64Image) async {
+  try {
+    Uint8List decodedBytes = base64Decode(base64Image);
+    Image image = Image.memory(decodedBytes);
+    
+    return image;
+  } catch (e) {
+    throw Exception("Error decoding base64 to Image: $e");
+  }
+}
+
+  void _submit() async {
     final int donationIndex = context
         .read<DonationProvider>()
         .donations
         .indexWhere((d) => d.id == widget.donation.id);
     if (donationIndex != -1) {
-      context.read<DonationProvider>().donations[donationIndex] = Donation(
+      convertedImage = await _convertImage(_imageFile!);
+     Donation updatedDonation =  Donation(
         id: widget.donation.id,
         items: widget.donation.items,
         logistics: widget.donation.logistics,
@@ -117,11 +144,12 @@ class _DonationStatusState extends State<DonationStatus> {
         phoneNum: widget.donation.phoneNum,
         date: widget.donation.date,
         time: widget.donation.time,
-        proof: _imageFile,
+        proof: convertedImage,
         status: _currentStatus,
         donationdrive: _selectedDrive,
       );
-      context.read<DonationProvider>().notifyListeners();
+
+      context.read<DonationProvider>().editDonation(widget.donation.id, updatedDonation);
     }
     if (_currentStatus == 'Complete') {
       _sendSMS();
@@ -216,10 +244,20 @@ class _DonationStatusState extends State<DonationStatus> {
                   _buildDataRow('Donation Drive', '${widget.donation.donationdrive}'),
                   const SizedBox(height: 10.0),
                   Center(
-                    child: Image.file(
-                      File(widget.donation.proof!.path),
-                      height: 200,
-                      fit: BoxFit.cover,
+                    child: FutureBuilder<Widget>(
+                      future: decodeBase64ToImage(widget.donation.proof!),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return SizedBox(
+                            height: 150,
+                            child: snapshot.data,
+                          );
+                        }
+                      },
                     ),
                   )
                 ],
