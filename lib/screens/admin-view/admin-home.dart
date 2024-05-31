@@ -72,7 +72,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 final organizationProvider =
                     Provider.of<OrganizationProvider>(context, listen: false);
                 final List<Organizations> organizations =
-                    organizationProvider.orgdrives;
+                    organizationProvider.organizations;
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
