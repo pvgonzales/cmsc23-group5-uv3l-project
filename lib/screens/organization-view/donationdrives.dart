@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donationdrive_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:flutter_project/screens/organization-view/modal.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,21 @@ class DonationDriveScreen extends StatefulWidget {
 
 class _DonationDriveScreenState extends State<DonationDriveScreen> {
   int _selectedIndex = 0;
+  bool _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      final userProvider = Provider.of<UserAuthProvider>(context, listen: false);
+      final donationDriveProvider = Provider.of<DonationDriveProvider>(context, listen: false);
+      String? orgName = userProvider.currentUsername;
+      if (orgName != null) {
+        donationDriveProvider.fetchCurrentOrgDrives(orgName);
+      }
+      _isInit = false;
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {

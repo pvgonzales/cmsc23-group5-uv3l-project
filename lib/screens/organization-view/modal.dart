@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donationdrive_model.dart';
 import 'package:flutter_project/model/org_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:provider/provider.dart';
@@ -202,13 +203,14 @@ class _DriveModalState extends State<DriveModal> {
 
     return TextButton(
       onPressed: () {
+        String? org = context.read<UserAuthProvider>().currentUsername;
         switch (widget.type) {
           case 'Add':
             {
               DonationDrive newDonationDrive = DonationDrive(
-                  id: 4,
                   name: _formFieldName.text,
-                  description: _formFieldDesc.text);
+                  description: _formFieldDesc.text,
+                  org: org!);
 
               context.read<DonationDriveProvider>().addDrive(newDonationDrive);
 
@@ -219,9 +221,10 @@ class _DriveModalState extends State<DriveModal> {
           case 'Edit':
             {
               DonationDrive info = DonationDrive(
-                id: 1,
+                id: orgdrivesItems[widget.index].id,
                 name: _formFieldName.text,
                 description: _formFieldDesc.text,
+                org: orgdrivesItems[widget.index].org,
               );
               context
                   .read<DonationDriveProvider>()
@@ -235,8 +238,9 @@ class _DriveModalState extends State<DriveModal> {
             {
               context
                   .read<DonationDriveProvider>()
-                  .deleteDrive(orgdrivesItems[widget.index].id);
+                  .deleteDrive(orgdrivesItems[widget.index].id.toString());
               // Remove dialog after editing
+              print("======== Deleting Drive =========");
               Navigator.of(context).pop();
               break;
             }
