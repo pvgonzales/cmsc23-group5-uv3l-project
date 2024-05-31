@@ -7,7 +7,7 @@ import 'package:flutter_project/screens/user_profile/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -15,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  List<String> _appBarTitles = ['Home', 'My Donations', 'Profile'];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -26,9 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<OrganizationProvider>(builder: (context, provider, _) {
-      List<Organizations> orgdrivesItems = provider.orgdrives;
+      List<Organizations> organizations = provider.organizations;
       return Scaffold(
-        backgroundColor: Color(0xfff4f6ff),
+        backgroundColor: const Color(0xfff4f6ff),
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverAppBar(
@@ -36,11 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
               automaticallyImplyLeading: false,
-              backgroundColor: Color(0xFF212738),
+              backgroundColor: const Color(0xFF212738),
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
+              flexibleSpace: const FlexibleSpaceBar(
                 titlePadding: EdgeInsetsDirectional.only(start: 16, bottom: 90),
                 title: Row(
                   children: [
@@ -82,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(55.0),
+                preferredSize: const Size.fromHeight(55.0),
                 child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 28),
@@ -95,8 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           filled: true,
                           fillColor: Colors.white,
                           hintText: 'Search organizations',
-                          prefixIcon: Icon(Icons.search),
-                          contentPadding: EdgeInsets.symmetric(
+                          prefixIcon: const Icon(Icons.search),
+                          contentPadding: const EdgeInsets.symmetric(
                               vertical: 8.0), // Adjust padding here
 
                           border: OutlineInputBorder(
@@ -114,20 +113,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.only(left: 7, right: 7, top: 0),
+              padding: const EdgeInsets.only(left: 7, right: 7, top: 0),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: _selectedIndex == 0
-                    ? _buildHomeContent(orgdrivesItems)
+                    ? _buildHomeContent(organizations)
                     : _selectedIndex == 1
-                        ? DonationsScreen()
-                        : ProfileScreen(),
+                        ? const DonationsScreen()
+                        : const ProfileScreen(),
               ),
             ),
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color(0xFF212738),
+          backgroundColor: const Color(0xFF212738),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -143,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Color.fromARGB(255, 243, 164, 160),
+          selectedItemColor: const Color.fromARGB(255, 243, 164, 160),
           onTap: _onItemTapped,
           unselectedItemColor: Colors.white,
         ),
@@ -151,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget _buildHomeContent(List<Organizations> orgdrivesItems) {
+  Widget _buildHomeContent(List<Organizations> organizations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -167,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
             vertical: 16,
           ),
           decoration: BoxDecoration(
-            color: Color.fromARGB(82, 255, 207, 205),
+            color: const Color.fromARGB(82, 255, 207, 205),
             borderRadius: BorderRadius.circular(20),
           ),
           child: const Text.rich(
@@ -190,8 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(left: 10),
-          child: Row(
+          margin: const EdgeInsets.only(left: 10),
+          child: const Row(
             children: [
               Text(
                 "Categories",
@@ -206,12 +205,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const OrgCategories(),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Container(
-          margin: EdgeInsets.only(left: 10),
-          child: Row(
+          margin: const EdgeInsets.only(left: 10),
+          child: const Row(
             children: [
               Text(
                 "Top Organizations",
@@ -225,12 +224,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: orgdrivesItems.length,
+            itemCount: organizations.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.all(10),
@@ -245,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.asset(
-                          orgdrivesItems[index].image!,
+                          organizations[index].image!,
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
@@ -254,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          orgdrivesItems[index].name,
+                          organizations[index].name,
                           style: const TextStyle(
                             fontSize: 14,
                             fontFamily: "MyFont1",
@@ -267,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () async {
                           var res = await Navigator.pushNamed(
                               context, '/org-details',
-                              arguments: orgdrivesItems[index]);
+                              arguments: organizations[index]);
                           ScaffoldMessenger.of(context)
                             ..removeCurrentSnackBar()
                             ..showSnackBar(
