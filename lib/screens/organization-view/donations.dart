@@ -54,7 +54,7 @@ class _DonationStatusState extends State<DonationStatus> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Camera permission denied')),
+        const SnackBar(content: Text('Camera permission denied')),
       );
     }
   }
@@ -73,17 +73,13 @@ class _DonationStatusState extends State<DonationStatus> {
         to: recipient,
         message: message,
         statusListener: (SendStatus status) {
-          if (status == SendStatus.SENT) {
-            print("SMS is sent!");
-          } else if (status == SendStatus.DELIVERED) {
-            print("SMS is delivered!");
+          if (status == SendStatus.DELIVERED) {
+            return("SMS is delivered!");
           } else {
-            print("Failed to send SMS.");
+            return("Failed to send SMS.");
           }
         },
       );
-    } else {
-      print("SMS permissions not granted.");
     }
   }
 
@@ -132,7 +128,7 @@ class _DonationStatusState extends State<DonationStatus> {
       _showNotification();
     }
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         backgroundColor: Color.fromARGB(255, 255, 216, 214),
         content: Text(
           'Donation Status Updated',
@@ -144,11 +140,11 @@ class _DonationStatusState extends State<DonationStatus> {
           ),
         )));
   }
-
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Donation Details',
             style: TextStyle(
               fontSize: 20,
@@ -157,14 +153,14 @@ class _DonationStatusState extends State<DonationStatus> {
               color: Colors.white,
             ),
           ),
-          backgroundColor: Color(0xFF212738),
-          iconTheme: IconThemeData(
+          backgroundColor: const Color(0xFF212738),
+          iconTheme: const IconThemeData(
             color: Colors.white, // Change this color to the desired color
           ),
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(left: 30, right: 30, top: 50, bottom: 30),
+            padding: const EdgeInsets.only(left: 30, right: 30, top: 50, bottom: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -173,7 +169,7 @@ class _DonationStatusState extends State<DonationStatus> {
                     children: [
                       Text(
                         '${widget.donation.id}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: "MyFont1",
                           color: Color(0xFF212738),
                           fontSize: 19,
@@ -181,10 +177,10 @@ class _DonationStatusState extends State<DonationStatus> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 0,
                       ),
-                      Text(
+                      const Text(
                         'Donation ID',
                         style: TextStyle(
                           fontFamily: "MyFont1",
@@ -197,42 +193,44 @@ class _DonationStatusState extends State<DonationStatus> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20.0),
-                _buildDataRow('Items', '${widget.donation.items.join(', ')}'),
-                SizedBox(height: 10.0),
-                _buildDataRow('Logistics', '${widget.donation.logistics}'),
+                const SizedBox(height: 20.0),
+                _buildDataRow('Items', widget.donation.items.join(', ')),
+                const SizedBox(height: 10.0),
+                _buildDataRow('Logistics', widget.donation.logistics),
                 if (widget.donation.address != null &&
                     widget.donation.phoneNum != null) ...[
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   _buildDataRow('Address', '${widget.donation.address}'),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   _buildDataRow('Phone Number', '${widget.donation.phoneNum}'),
                 ],
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 _buildDataRow('Date', '${widget.donation.date}'),
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 _buildDataRow('Time', '${widget.donation.time}'),
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 _buildDataRow('Status', '${widget.donation.status}'),
                 if (widget.donation.proof != null &&
                     widget.donation.donationdrive != null) ...[
-                  SizedBox(height: 10.0),
-                  _buildDataRow(
-                      'Donation Drive', '${widget.donation.donationdrive}'),
-                  Image.file(
-                    File(widget.donation.proof!.path),
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
+                  const SizedBox(height: 10.0),
+                  _buildDataRow('Donation Drive', '${widget.donation.donationdrive}'),
+                  const SizedBox(height: 10.0),
+                  Center(
+                    child: Image.file(
+                      File(widget.donation.proof!.path),
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  )
                 ],
-                SizedBox(height: 6.0),
+                const SizedBox(height: 6.0),
                 if (widget.donation.status != 'Complete') ...[
                   if (widget.donation.logistics == 'Pick up') ...[
                     Center(
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: DropdownButton<String>(
-                          dropdownColor: Color.fromARGB(255, 255, 227, 225),
+                          dropdownColor: const Color.fromARGB(255, 255, 227, 225),
                           borderRadius: BorderRadius.circular(20),
                           value: _currentStatus,
                           onChanged: (String? newValue) {
@@ -242,7 +240,7 @@ class _DonationStatusState extends State<DonationStatus> {
                           },
                           underline: Container(
                             height: 1,
-                            color: Color(0xFF212738),
+                            color: const Color(0xFF212738),
                           ),
                           items: <String>[
                             'Pending',
@@ -255,7 +253,7 @@ class _DonationStatusState extends State<DonationStatus> {
                               value: value,
                               child: Text(
                                 value,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: "MyFont1",
                                   color: Color(0xFF212738),
                                   fontSize: 13,
@@ -269,7 +267,7 @@ class _DonationStatusState extends State<DonationStatus> {
                   ] else ...[
                     Center(
                       child: DropdownButton<String>(
-                        dropdownColor: Color.fromARGB(255, 255, 227, 225),
+                        dropdownColor: const Color.fromARGB(255, 255, 227, 225),
                         value: _currentStatus,
                         borderRadius: BorderRadius.circular(20),
                         onChanged: (String? newValue) {
@@ -279,7 +277,7 @@ class _DonationStatusState extends State<DonationStatus> {
                         },
                         underline: Container(
                           height: 1,
-                          color: Color(0xFF212738),
+                          color: const Color(0xFF212738),
                         ),
                         items: <String>[
                           'Pending',
@@ -291,7 +289,7 @@ class _DonationStatusState extends State<DonationStatus> {
                             value: value,
                             child: Text(
                               value,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "MyFont1",
                                 color: Color(0xFF212738),
                                 fontSize: 13,
@@ -303,15 +301,14 @@ class _DonationStatusState extends State<DonationStatus> {
                     )
                   ],
                   if (_currentStatus == 'Complete') ...[
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     Consumer<DonationDriveProvider>(
                       builder: (context, driveProvider, child) {
                         return Center(
-                          child: Container(
-                            child: DropdownButton<String>(
-                              dropdownColor: Color.fromARGB(255, 255, 227, 225),
+                          child: DropdownButton<String>(
+                              dropdownColor: const Color.fromARGB(255, 255, 227, 225),
                               borderRadius: BorderRadius.circular(20),
-                              hint: Text(
+                              hint: const Text(
                                 'Select Donation Drive',
                                 style: TextStyle(
                                   fontFamily: "MyFont1",
@@ -327,7 +324,7 @@ class _DonationStatusState extends State<DonationStatus> {
                               },
                               underline: Container(
                                 height: 1,
-                                color: Color(0xFF212738),
+                                color: const Color(0xFF212738),
                               ),
                               items: driveProvider.orgdrives
                                   .map<DropdownMenuItem<String>>(
@@ -336,7 +333,7 @@ class _DonationStatusState extends State<DonationStatus> {
                                   value: drive.name,
                                   child: Text(
                                     drive.name,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: "MyFont1",
                                       color: Color(0xFF212738),
                                       fontSize: 13,
@@ -345,11 +342,10 @@ class _DonationStatusState extends State<DonationStatus> {
                                 );
                               }).toList(),
                             ),
-                          ),
                         );
                       },
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     Center(
                         child: Column(
                       children: [
@@ -359,11 +355,11 @@ class _DonationStatusState extends State<DonationStatus> {
                                 MaterialStateProperty.all<Color?>(null),
                           ),
                           onPressed: _pickImage,
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.camera_alt,
                             color: Color(0xFF212738),
                           ),
-                          label: Text(
+                          label: const Text(
                             'Upload Photo',
                             style: TextStyle(
                                 fontFamily: "MyFont1",
@@ -372,18 +368,20 @@ class _DonationStatusState extends State<DonationStatus> {
                                 fontWeight: FontWeight.w500),
                           ),
                         ),
+                        const SizedBox(height: 20.0),
                         if (_imageFile != null) ...[
-                          SizedBox(height: 10.0),
-                          Image.file(
-                            File(_imageFile!.path),
-                            height: 150,
-                            fit: BoxFit.cover,
-                          ),
+                          Center(
+                            child: Image.file(
+                              File(_imageFile!.path),
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                          )
                         ],
                       ],
                     ))
                   ],
-                  SizedBox(height: 5.0),
+                  const SizedBox(height: 5.0),
                   Center(
                     child: ElevatedButton(
                       onPressed: _submit,
@@ -391,7 +389,7 @@ class _DonationStatusState extends State<DonationStatus> {
                         backgroundColor:
                             MaterialStateProperty.all<Color?>(null),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Submit',
                         style: TextStyle(
                             fontFamily: "MyFont1",
@@ -411,10 +409,10 @@ class _DonationStatusState extends State<DonationStatus> {
   Widget _buildDataRow(String label, String value) {
     return Container(
       decoration: BoxDecoration(
-        color: Color.fromARGB(82, 255, 207, 205),
+        color: const Color.fromARGB(82, 255, 207, 205),
         borderRadius: BorderRadius.circular(5.0),
       ),
-      padding: EdgeInsets.all(6),
+      padding: const EdgeInsets.all(6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -424,12 +422,12 @@ class _DonationStatusState extends State<DonationStatus> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(5.0),
             ),
-            padding: EdgeInsets.all(6.0),
+            padding: const EdgeInsets.all(6.0),
             child: Center(
               child: Text(
                 textAlign: TextAlign.center,
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                   fontFamily: "MyFont1",
@@ -442,13 +440,13 @@ class _DonationStatusState extends State<DonationStatus> {
           Container(
             width: 120,
             decoration: BoxDecoration(
-              color: Color(0xFF212738),
+              color: const Color(0xFF212738),
               borderRadius: BorderRadius.circular(5.0),
             ),
-            padding: EdgeInsets.all(6.0),
+            padding: const EdgeInsets.all(6.0),
             child: Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w400,
                 fontFamily: "MyFont1",
