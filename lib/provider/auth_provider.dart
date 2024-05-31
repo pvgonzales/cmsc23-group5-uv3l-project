@@ -10,19 +10,42 @@ class UserAuthProvider with ChangeNotifier {
   late Stream<User?> _userStream;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<UserModel> _users = [];
+  String? _currentUsername;
 
   List<UserModel> get users => _users;
 
   Stream<User?> get userStream => _userStream;
   User? get user => authService.getUser();
+  String? get currentUsername => _currentUsername;
 
   UserAuthProvider() {
     authService = FirebaseAuthApi();
     fetchUser();
+    _userStream.listen((user) {
+      if (user != null) {
+        fetchCurrentUserData(user.uid);
+      } else {
+        _currentUsername = null;
+        notifyListeners();
+      }
+    });
   }
 
   void fetchUser() {
     _userStream = authService.fetchUser();
+  }
+
+  Future<void> fetchCurrentUserData(String uid) async {
+    try {
+      final userDoc = await _firestore.collection("users").doc(uid).get();
+      if (userDoc.exists) {
+        final data = userDoc.data()!;
+        _currentUsername = data["username"];
+        notifyListeners();
+      }
+    } catch (error) {
+      print("Error fetching current user data: $error");
+    }
   }
 
   Future<void> fetchUserData(String uid, BuildContext context) async {
