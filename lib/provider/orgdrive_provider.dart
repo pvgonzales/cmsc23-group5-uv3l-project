@@ -3,12 +3,12 @@ import 'package:flutter_project/model/org_model.dart';
 
 class OrganizationProvider extends ChangeNotifier {
   final bool _isLoading = false;
-  List<Organizations> _orgdrives = [];
+  List<Organizations> _organizations = [];
 
-  List<Organizations> _filteredOrgdrives = [];
+  List<Organizations> _filteredOrgs = [];
 
   OrganizationProvider() {
-    _orgdrives = [
+    _organizations = [
       Organizations(
           id: 1,
           image: "assets/images/org1.jpg",
@@ -58,15 +58,21 @@ class OrganizationProvider extends ChangeNotifier {
           status: true,
           type: "Others")
     ];
-    _filteredOrgdrives = _orgdrives;
+    _filteredOrgs = _organizations;
   }
 
   bool get isLoading => _isLoading;
 
-  List<Organizations> get orgdrives => _filteredOrgdrives; 
+  List<Organizations> get organizations => _filteredOrgs; 
 
   void filterOrganizationsByCategory(String category) {
-    _filteredOrgdrives = _orgdrives.where((org) => org.type == category).toList();
+    _filteredOrgs = _organizations.where((org) => org.type == category).toList();
+    notifyListeners();
+  }
+
+  void updateOrganizationStatus(int id, bool status) {
+    final org = _organizations.firstWhere((org) => org.id == id);
+    org.status = status;
     notifyListeners();
   }
 
