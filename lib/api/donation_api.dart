@@ -102,4 +102,15 @@ class DonationApi {
     }
   }
 
+  Future<void> deleteDonation(int id) async {
+    try {
+      QuerySnapshot querySnapshot = await donationCollection.where("id", isEqualTo: id).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot document = querySnapshot.docs.first;
+        await donationCollection.doc(document.id).delete();
+      }
+    } catch (e) {
+      print("Error deleting donation: $e");
+    }
+  }
 }
