@@ -7,7 +7,15 @@ class CompleteDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complete Profile'),
+        title: const Text(
+          'Complete Profile',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF212738),
+            fontFamily: "MyFont3",
+          ),
+        ),
         backgroundColor: Color(0xFF212738),
         iconTheme: IconThemeData(
           color: Colors.white, // Change this color to the desired color
@@ -39,7 +47,7 @@ class CompleteDetailsScreen extends StatelessWidget {
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
                             fontFamily: "MyFont1",
-                            color: Colors.white,
+                            color: Color(0xFF212738),
                           )),
                       const Text(
                         "Complete your profile details",
@@ -54,17 +62,6 @@ class CompleteDetailsScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       const DetailsForm(),
                       const SizedBox(height: 30),
-                      Text(
-                        "By continuing your confirm that you agree \nwith our Term and Condition",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF212738),
-                          fontFamily: "MyFont1",
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
                     ],
                   ),
                 ),

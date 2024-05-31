@@ -60,13 +60,11 @@ class _IntroScreenState extends State<IntroScreen> {
                       children: <Widget>[
                         const Spacer(),
                         Image.asset(
-                          'assets/images/applogo2.png',
+                          'assets/images/applogo3.png',
                           width: 190,
                           fit: BoxFit.cover,
                         ),
-                        SizedBox(
-                          height: 15,
-                        ),
+                        const Spacer(flex: 1),
                         Text(
                           splashData[index]['title']!,
                           textAlign: TextAlign.center,
@@ -75,17 +73,17 @@ class _IntroScreenState extends State<IntroScreen> {
                             fontWeight: FontWeight.bold,
                             fontFamily: "MyFont3",
                             color: Color(0xFF212738),
-                            height: 0.8,
+                            height: 1,
                           ),
                         ),
                         SizedBox(
-                          height: 15,
+                          height: 45,
                         ),
                         Text(
                           splashData[index]['text']!,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w400,
                             fontFamily: "MyFont1",
                             color: Color(0xFF212738),

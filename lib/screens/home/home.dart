@@ -158,8 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           width: double.infinity,
           margin: const EdgeInsets.only(
-              left: 15,
-              right: 15,
+              left: 10,
+              right: 10,
               top: 0,
               bottom: 16), // Adjust the top margin here
           padding: const EdgeInsets.symmetric(
@@ -189,6 +189,22 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+        Container(
+          margin: EdgeInsets.only(left: 10),
+          child: Row(
+            children: [
+              Text(
+                "Categories",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "MyFont3",
+                  color: Color(0xFF212738),
+                ),
+              ),
+            ],
+          ),
+        ),
         const OrgCategories(),
         SizedBox(
           height: 10,
@@ -201,8 +217,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 "Top Organizations",
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "MyFont1",
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "MyFont3",
                   color: Color(0xFF212738),
                 ),
               ),
