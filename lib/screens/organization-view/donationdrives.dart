@@ -14,7 +14,7 @@ class DonationDriveScreen extends StatefulWidget {
 
 class _DonationDriveScreenState extends State<DonationDriveScreen> {
   int _selectedIndex = 0;
-  bool _isInit = true;
+  final bool _isInit = true;
 
   @override
   void didChangeDependencies() {
@@ -26,7 +26,6 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
       if (orgName != null) {
         donationDriveProvider.fetchCurrentOrgDrives(orgName);
       }
-      _isInit = false;
     }
   }
 
@@ -111,6 +110,7 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
             children: [
               Consumer<DonationDriveProvider>(
                 builder: (context, provider, child) {
+                  didChangeDependencies();
                   List<DonationDrive> donationsdrives = provider.orgdrives;
                   return ListView.builder(
                     shrinkWrap: true,
@@ -161,6 +161,17 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
                                   );
                                 },
                                 icon: const Icon(Icons.delete_outlined),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        DriveModal(
+                                            type: 'View', index: index),
+                                  );
+                                },
+                                icon: const Icon(Icons.remove_red_eye_rounded),
                               ),
                             ],
                           ),
