@@ -78,7 +78,15 @@ class _DriveModalState extends State<DriveModal> {
           ),
         );
       default:
-        return const Text("");
+        return const Text(
+          "View Donation Drive",
+          style: TextStyle(
+            fontFamily: "MyFont1",
+            color: Color(0xFF212738),
+            fontWeight: FontWeight.w900,
+            fontSize: 16,
+          ),
+        );
     }
   }
 
@@ -86,6 +94,8 @@ class _DriveModalState extends State<DriveModal> {
   Widget _buildContent(BuildContext context) {
     List<Organizations> organizations =
         context.read<OrganizationProvider>().organizations;
+    List<DonationDrive> orgdrivesItems =
+          context.read<DonationDriveProvider>().orgdrives;
     switch (widget.type) {
       case 'Delete':
         {
@@ -96,6 +106,35 @@ class _DriveModalState extends State<DriveModal> {
               color: Color(0xFF212738),
               fontWeight: FontWeight.w500,
               fontSize: 14,
+            ),
+          );
+        }
+      case 'View':
+        {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  "Name: ${orgdrivesItems[widget.index].name}",
+                  style: const TextStyle(
+                    fontFamily: "MyFont1",
+                    color: Color(0xFF212738),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(
+                  child: Text(
+                    "Description: ${orgdrivesItems[widget.index].description}",
+                    style: const TextStyle(
+                      fontFamily: "MyFont1",
+                      color: Color(0xFF212738),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  )
+                )
+              ],
             ),
           );
         }
@@ -239,8 +278,6 @@ class _DriveModalState extends State<DriveModal> {
               context
                   .read<DonationDriveProvider>()
                   .deleteDrive(orgdrivesItems[widget.index].id.toString());
-              // Remove dialog after editing
-              print("======== Deleting Drive =========");
               Navigator.of(context).pop();
               break;
             }
@@ -252,7 +289,7 @@ class _DriveModalState extends State<DriveModal> {
         fontWeight: FontWeight.w900,
         fontSize: 16,
       )),
-      child: Text(widget.type),
+      child: widget.type == 'View' ? const Text('') : Text(widget.type),
     );
   }
 
