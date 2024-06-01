@@ -17,6 +17,7 @@ class DonationApi {
         "status": donation.status,
         "donationdrive": donation.donationdrive,
         "donor": donation.donor,
+        "proof": donation.proof,
       });
     } catch(e) {
       print(e);
