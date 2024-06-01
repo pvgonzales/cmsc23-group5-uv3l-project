@@ -21,6 +21,14 @@ class _AdminScreenState extends State<AdminScreen> {
 
   int _selectedIndex = 0;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Provider.of<DonationProvider>(context, listen: false).fetchDonations();
+  //   Provider.of<OrganizationProvider>(context, listen: false).fetchOrganizations();
+  //   Provider.of<UserAuthProvider>(context, listen: false).fetchAllUsers();
+  // }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

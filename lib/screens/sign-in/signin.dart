@@ -65,7 +65,7 @@ class SignInScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 40),
-                        const SignInForm(destinationRoute: '/home'),
+                        const SignInForm(destinationRoute: '/home', expectedUserType: 'donor'),
                         const SizedBox(height: 20),
                         const Text(
                           "— or continue as — ",

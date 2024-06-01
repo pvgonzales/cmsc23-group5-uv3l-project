@@ -20,7 +20,7 @@ class _DetailsFormFormState extends State<DetailsForm> {
   String? username;
   String? phoneNumber;
   String? address;
-  String usertype = 'Donor';
+  String usertype = 'donor';
   bool organization = false;
   XFile? _imageFile;
   String? convertedImage;

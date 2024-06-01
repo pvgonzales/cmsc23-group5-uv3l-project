@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 
 class SignInForm extends StatefulWidget {
   final String destinationRoute;
+  final String? expectedUserType;
 
-  const SignInForm({Key? key, required this.destinationRoute})
+  const SignInForm({Key? key, required this.destinationRoute, this.expectedUserType})
       : super(key: key);
 
   @override
@@ -113,22 +114,50 @@ class _SignInFormState extends State<SignInForm> {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
 
-                String? message = await context
+                Map<String, String> response = await context
                     .read<UserAuthProvider>()
                     .authService
                     .signIn(email!, password!);
 
-                if (message == "Success") {
-                  Navigator.pushReplacementNamed(
-                      context, widget.destinationRoute);
+                if (response["status"] == "Success") {
+                  String userType = response["usertype"]!;
+                  if (userType == widget.expectedUserType) {
+                    Navigator.pushReplacementNamed(context, widget.destinationRoute);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Access denied."),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    print(userType);
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Invalid email or password"),
+                    SnackBar(
+                      content: Text(response["message"] ?? "Invalid email or password"),
                       backgroundColor: Colors.red,
                     ),
                   );
+                  print(response["message"]);
                 }
+
+                // String? message = await context
+                //     .read<UserAuthProvider>()
+                //     .authService
+                //     .signIn(email!, password!);
+
+                // if (message == "Success") {
+                //   Navigator.pushReplacementNamed(
+                //       context, widget.destinationRoute);
+                // } else {
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(
+                //       content: Text("Invalid email or password"),
+                //       backgroundColor: Colors.red,
+                //     ),
+                //   );
+                // }
               }
             },
             child: const Text(

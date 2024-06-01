@@ -64,7 +64,7 @@ class AdminLoginScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 40),
                       SignInForm(
-                        destinationRoute: '/admin',
+                        destinationRoute: '/admin', expectedUserType: 'admin',
                       ),
                       SizedBox(height: 20),
                       Row(

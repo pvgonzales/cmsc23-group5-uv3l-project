@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/api/org_api.dart';
 import 'package:flutter_project/model/org_model.dart';
 
 class OrganizationProvider extends ChangeNotifier {
-  final bool _isLoading = false;
+  bool _isLoading = false;
   List<Organizations> _organizations = [];
 
   List<Organizations> _filteredOrgs = [];
@@ -64,6 +65,19 @@ class OrganizationProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   List<Organizations> get organizations => _filteredOrgs; 
+
+  // Future<void> fetchOrganizations() async {
+  //   _isLoading = true;
+  //   notifyListeners();
+
+  //   List<Organizations> orgs = await OrgApi().fetchOrganizations();
+  //   _organizations = orgs;
+  //   _filteredOrgs = _organizations;
+  //   print(_organizations);
+
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
 
   void filterOrganizationsByCategory(String category) {
     _filteredOrgs = _organizations.where((org) => org.type == category).toList();
