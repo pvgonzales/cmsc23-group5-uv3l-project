@@ -95,14 +95,14 @@ class DonationProvider extends ChangeNotifier {
     return null;
   }
 
-  void editDropOffStatus(int id, String status) {
-    for (var donation in donations) {
-      if (donation.id == id) {
-        donation.status = status;
-        notifyListeners();
-        break;
-      }
+  void editDropOffStatus(int id, String status) async {
+    try {
+      await donationApi.editDropOffStatus(id, status);
+      notifyListeners();
+    }catch (e) {
+      return;
     }
+    notifyListeners();
   }
 
   void editDonation(int id, Donation newDonation) async {
