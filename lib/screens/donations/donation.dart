@@ -295,7 +295,7 @@ class DonationCard extends StatelessWidget {
                         (Column(children: [
                           QrImageView(
                             data:
-                                "${donation.id}\n${donation.items.join(', ')}\n${donation.address}\n${donation.phoneNum}\n${donation.date}\n${donation.time}\n${donation.status}",
+                                "${donation.id}",
                             version: QrVersions.auto,
                             size: 140.0,
                           ),
