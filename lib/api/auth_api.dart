@@ -56,6 +56,21 @@ class FirebaseAuthApi {
         "usertype": type,
         "photo": image
       });
+
+      if (type == "Organization") {
+        await FirebaseFirestore.instance.collection("organizations").doc(userCredential.user!.uid).set({
+          "uid": userCredential.user!.uid,
+          "name": fullName,
+          "email": email,
+          "username": username,
+          "contact": contactNumber,
+          "address": address,
+          "photo": image,
+          "description": null,
+          "status": true,
+          "type": null
+        });
+      }
       print("User created: ${userCredential.user!.uid}");
       return "Success";
       // return true;
