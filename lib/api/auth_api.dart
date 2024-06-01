@@ -56,6 +56,21 @@ class FirebaseAuthApi {
         "usertype": type,
         "photo": image
       });
+
+      if (type == "Organization") {
+        await FirebaseFirestore.instance.collection("organizations").doc(userCredential.user!.uid).set({
+          "uid": userCredential.user!.uid,
+          "name": fullName,
+          "email": email,
+          "username": username,
+          "contact": contactNumber,
+          "address": address,
+          "photo": image,
+          "description": null,
+          "status": true,
+          "type": null
+        });
+      }
       print("User created: ${userCredential.user!.uid}");
       return "Success";
       // return true;
@@ -69,17 +84,27 @@ class FirebaseAuthApi {
     }
   }
 
-  Future<String?> signIn(String email, String password) async {
+  Future<Map<String, String>> signIn(String email, String password) async {
     try {
-      UserCredential credentials = await auth.signInWithEmailAndPassword(email: email, password: password);
-      print(credentials);
-      print("==========");
-      return "Success";
-    } on FirebaseException catch(e) {
-      return ("Firebase Error: ${e.code} : ${e.message}");
-    } catch(e) {
-      return ("Error: $e");
+    UserCredential credentials = await auth.signInWithEmailAndPassword(email: email, password: password);
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection("users").doc(credentials.user!.uid).get();
+
+    if (userDoc.exists) {
+      var userData = userDoc.data() as Map<String, dynamic>;
+      String? userType = userData["usertype"];
+      if (userType != null) {
+        return {"status": "Success", "usertype": userType.toLowerCase()};
+      } else {
+        return {"status": "Error", "message": "User type not found"};
+      }
+    } else {
+      return {"status": "Error", "message": "User document not found"};
     }
+  } on FirebaseException catch(e) {
+    return {"status": "Firebase Error", "message": "${e.code} : ${e.message}"};
+  } catch(e) {
+    return {"status": "Error", "message": "$e"};
+  }
   }
 
   Future<void> signOut() async {
