@@ -199,6 +199,7 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: donations.length,
                     itemBuilder: (context, index) {
+                      List<Donation> donations = provider.donations;
                       return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 20,
