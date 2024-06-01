@@ -1,5 +1,5 @@
 class Organizations {
-  int id;
+  int? id;
   String name;
   String description;
   String? image;
@@ -7,7 +7,7 @@ class Organizations {
   String type;
 
   Organizations({
-    required this.id,
+    this.id,
     required this.name,
     this.image,
     required this.description,
