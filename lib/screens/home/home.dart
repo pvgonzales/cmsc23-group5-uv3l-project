@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
@@ -22,10 +25,30 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<Widget> decodeBase64ToImage(String base64Image) async {
+  try {
+    Uint8List decodedBytes = base64Decode(base64Image);
+    Image image = Image.memory(decodedBytes);
+    
+    return image;
+  } catch (e) {
+    throw Exception("Error decoding base64 to Image: $e");
+  }
+}
+      
   @override
   Widget build(BuildContext context) {
-    return Consumer<OrganizationProvider>(builder: (context, provider, _) {
-      List<Organizations> organizations = provider.organizations;
+    final OrganizationProvider organizationProvider =
+    Provider.of<OrganizationProvider>(context, listen: false);
+    return FutureBuilder(
+      future: organizationProvider.fetchOrganizations(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else {
+        final organizations = organizationProvider.organizations;
       return Scaffold(
         backgroundColor: const Color(0xfff4f6ff),
         body: NestedScrollView(
@@ -147,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
           unselectedItemColor: Colors.white,
         ),
       );
-    });
+  }});
   }
 
   Widget _buildHomeContent(List<Organizations> organizations) {
@@ -243,11 +266,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(
-                          organizations[index].image!,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
+                        child: Center(
+                        child: FutureBuilder<Widget>(
+                          future: decodeBase64ToImage(organizations[index].image),
+                          builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                return SizedBox(
+                                  height: 150,
+                                  child: snapshot.data,
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ),
                       const SizedBox(width: 10),
