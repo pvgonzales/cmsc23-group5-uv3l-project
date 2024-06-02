@@ -147,6 +147,7 @@ Future<Widget> decodeBase64ToImage(String base64Image) async {
         proof: convertedImage,
         status: _currentStatus,
         donationdrive: _selectedDrive,
+        donor: widget.donation.donor
       );
 
       context.read<DonationProvider>().editDonation(widget.donation.id, updatedDonation);
@@ -221,6 +222,8 @@ Future<Widget> decodeBase64ToImage(String base64Image) async {
                     ],
                   ),
                 ),
+                const SizedBox(height: 20.0),
+                _buildDataRow('Donor', widget.donation.donor!),
                 const SizedBox(height: 20.0),
                 _buildDataRow('Items', widget.donation.items.join(', ')),
                 const SizedBox(height: 10.0),
