@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/provider/auth_provider.dart';
@@ -10,7 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DonorForm extends StatefulWidget {
-  const DonorForm({super.key});
+  final String orgusername;
+  const DonorForm({super.key, required this.orgusername});
 
   @override
   _DonorFormFormState createState() => _DonorFormFormState();
@@ -457,7 +457,8 @@ class _DonorFormFormState extends State<DonorForm> {
                       time: _timeValue.text,
                       proof: convertedImage,
                       status: "Pending",
-                      donor: userProvider.currentUsername);
+                      donor: userProvider.currentUsername,
+                      org: widget.orgusername);
                   // var donationProvider =
                   //     Provider.of<DonationProvider>(context, listen: false);
                   donationProvider.addDonation(newDonation);
