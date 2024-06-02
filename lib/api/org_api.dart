@@ -15,12 +15,17 @@ class OrgApi {
 
       return snapshot.docs.map((doc) {
         return Organizations(
-          // id: doc['id'],
+          uid: doc['uid'],
+          email: doc['email'],
           name: doc['name'],
+          username: doc['username'],
+          address: doc['address'],
+          contact: doc['contact'],
+          approved: doc['approved'],
           description: doc['description'],
-          image: doc['image'],
+          image: doc['photo'],
           status: doc['status'],
-          type: doc['type'],
+          type: doc['orgtype'],
         );
       }).toList();
     } catch (e) {
@@ -28,4 +33,39 @@ class OrgApi {
       return [];
     }
   }
+
+  Future<List<Organizations>> fetchOrganizationByUsername(String username) async {
+    try {
+      QuerySnapshot snapshot = await orgCollection.where('username', isEqualTo: username).get();
+      return snapshot.docs.map((doc) {
+        return Organizations(
+          uid: doc['uid'],
+          email: doc['email'],
+          name: doc['name'],
+          username: doc['username'],
+          address: doc['address'],
+          contact: doc['contact'],
+          approved: doc['approved'],
+          description: doc['description'],
+          image: doc['photo'],
+          status: doc['status'],
+          type: doc['orgtype'],
+        );
+      }).toList();
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  Future<void> updateOrganizationStatus(String id, bool status) async {
+    try {
+      await orgCollection.doc(id).update({
+        "status": status
+      });
+    } catch (e) {
+      print("Error updating organization status: $e");
+    }
+  }
+
 }
