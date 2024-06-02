@@ -43,7 +43,7 @@ class FirebaseAuthApi {
     }
   }
 
-  Future<String> signUp(String fullName, String email, String username, String password, String contactNumber, String address, String type, String? image) async {
+  Future<String> signUp(String fullName, String email, String username, String password, String contactNumber, String address, String type, String? image, String? orgdesc, String? orgtype) async {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
       await FirebaseFirestore.instance.collection("users").doc(userCredential.user!.uid).set({
@@ -54,9 +54,8 @@ class FirebaseAuthApi {
         "contact": contactNumber,
         "address": address,
         "usertype": type,
-        "photo": image
       });
-
+      
       if (type == "Organization") {
         await FirebaseFirestore.instance.collection("organizations").doc(userCredential.user!.uid).set({
           "uid": userCredential.user!.uid,
@@ -66,9 +65,11 @@ class FirebaseAuthApi {
           "contact": contactNumber,
           "address": address,
           "photo": image,
-          "description": null,
-          "status": true,
-          "type": null
+          "description": orgdesc,
+          "status": false,
+          "approved": false,
+          "orgtype": orgtype,
+          "usertype": type
         });
       }
       print("User created: ${userCredential.user!.uid}");
