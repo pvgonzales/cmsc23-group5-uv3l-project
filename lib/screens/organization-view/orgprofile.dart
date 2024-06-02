@@ -237,6 +237,22 @@ Widget build(BuildContext context) {
                           ],
                         ),
                       ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            context.read<UserAuthProvider>().signOut();
+                            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+                          },
+                          child: Text(
+                            'Logout',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                              fontFamily: "MyFont1",
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   )
                 : const Center(
