@@ -163,6 +163,19 @@ class DonationCard extends StatelessWidget {
                       SizedBox(
                         height: 16,
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Dontate to:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.org}',
+                            style: valueTextStyle,
+                          ),
+                        ],
+                      ),
                       Container(
                         padding: EdgeInsets.all(0),
                         child: Row(
@@ -257,24 +270,6 @@ class DonationCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (donation.proof != null)
-                      Center(
-                        child: FutureBuilder<Widget>(
-                          future: decodeBase64ToImage(donation.proof!),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              return SizedBox(
-                                height: 150,
-                                child: snapshot.data,
-                              );
-                            }
-                          },
-                        ),
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -288,7 +283,28 @@ class DonationCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      if (donation.proof != null)...[
+                        Text('Proof of Donation', style: labelTextStyle,),
+                        const SizedBox(height: 10,),
+                        Center(
+                          child: FutureBuilder<Widget>(
+                            future: decodeBase64ToImage(donation.proof!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                return SizedBox(
+                                  height: 150,
+                                  child: snapshot.data,
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                      const SizedBox(
                         height: 0,
                       ),
                       if (donation.logistics == 'Drop-off')
