@@ -18,6 +18,7 @@ class DonationApi {
         "donationdrive": donation.donationdrive,
         "donor": donation.donor,
         "proof": donation.proof,
+        "org": donation.org
       });
     } catch(e) {
       print(e);
@@ -45,7 +46,8 @@ class DonationApi {
           status: doc['status'],
           donationdrive: doc['donationdrive'],
           proof: doc['proof'],
-          donor: doc['donor']
+          donor: doc['donor'],
+          org: doc['org']
         );
       }).toList();
     } catch (e) {
@@ -70,6 +72,7 @@ class DonationApi {
           donationdrive: doc['donationdrive'],
           proof: doc['proof'],
           donor: doc['donor'],
+          org: doc['org']
           // proof: doc['proof'] != null ? XFile(doc['proof']) : null,
         );
       }).toList();
