@@ -45,6 +45,7 @@ class DonationApi {
           status: doc['status'],
           donationdrive: doc['donationdrive'],
           proof: doc['proof'],
+          donor: doc['donor']
         );
       }).toList();
     } catch (e) {
