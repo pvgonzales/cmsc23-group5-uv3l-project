@@ -12,6 +12,7 @@ class Donation {
   String? status;
   String? donationdrive;
   String? donor;
+  String? org;
 
   Donation({
     required this.id,
@@ -25,6 +26,7 @@ class Donation {
     required this.status,
     this.donationdrive,
     this.donor,
+    this.org
   });
 
   // Factory constructor to instantiate object from json format
@@ -40,7 +42,8 @@ class Donation {
       proof: json['proof'],
       status: json['status'],
       donationdrive: json['donationdrive'],
-      donor: json['donor']
+      donor: json['donor'],
+      org: json['org']
     );
   }
 
@@ -61,7 +64,8 @@ class Donation {
       'proof': info.proof,
       'status': info.status,
       'donationdrive': info.donationdrive,
-      'donor': info.donor
+      'donor': info.donor,
+      'org': info.org
     };
   }
 }
