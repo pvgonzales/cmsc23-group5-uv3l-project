@@ -1,17 +1,27 @@
 class Organizations {
-  int? id;
+  String uid;
   String name;
+  String email;
+  String username;
+  String address;
+  String contact;
+  bool approved;
   String description;
-  String? image;
-  bool? status;
+  String image;
+  bool status;
   String type;
 
   Organizations({
-    this.id,
+    required this.uid,
+    required this.username,
     required this.name,
-    this.image,
+    required this.email,
+    required this.address,
+    required this.contact,
+    required this.approved,
+    required this.image,
     required this.description,
-    this.status,
+    required this.status,
     required this.type
   });
 }
