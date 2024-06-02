@@ -67,6 +67,7 @@ class UserAuthProvider with ChangeNotifier {
 
   Future<void> signOut() async {
     await authService.signOut();
+    notifyListeners();
   }
 
   Future<bool> isEmailAlreadyInUse(String email) async {
