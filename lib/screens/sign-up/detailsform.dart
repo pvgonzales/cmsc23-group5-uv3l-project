@@ -20,6 +20,8 @@ class _DetailsFormFormState extends State<DetailsForm> {
   String? username;
   String? phoneNumber;
   String? address;
+  String? orgdesc;
+  String orgtype = 'Non-Profit';
   String usertype = 'donor';
   bool organization = false;
   XFile? _imageFile;
@@ -191,6 +193,65 @@ class _DetailsFormFormState extends State<DetailsForm> {
                 height: 150,
               ),
             ],
+            const SizedBox(height: 20),
+            TextFormField(
+              onSaved: (newValue) => orgdesc = newValue,
+              onChanged: (value) {
+                return;
+              },
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Please enter your address";
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                labelText: "Description",
+                hintText: "Describe your Organization",
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                suffixIcon: Icon(Icons.description)
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text('Type of Organization'),
+            Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: DropdownButton<String>(
+                  dropdownColor: const Color.fromARGB(255, 255, 227, 225),
+                  borderRadius: BorderRadius.circular(20),
+                  value: orgtype,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      orgtype = newValue!;
+                    });
+                  },
+                  underline: Container(
+                    height: 1,
+                    color: const Color(0xFF212738),
+                  ),
+                  items: <String>[
+                    'Non-Profit',
+                    'Religious',
+                    'Academic',
+                    'Health',
+                    'Others'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(
+                          fontFamily: "MyFont1",
+                          color: Color(0xFF212738),
+                          fontSize: 13,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
           ],
           const SizedBox(height: 20),
           ElevatedButton(
@@ -225,7 +286,10 @@ class _DetailsFormFormState extends State<DetailsForm> {
                       phoneNumber!,
                       address!,
                       usertype,
-                      convertedImage);
+                      convertedImage,
+                      orgdesc!,
+                      orgtype
+                    );
                   Navigator.pushNamed(context, '/sign-in');
                 }
               }
