@@ -147,7 +147,8 @@ Future<Widget> decodeBase64ToImage(String base64Image) async {
         proof: convertedImage,
         status: _currentStatus,
         donationdrive: _selectedDrive,
-        donor: widget.donation.donor
+        donor: widget.donation.donor,
+        org: widget.donation.org
       );
 
       context.read<DonationProvider>().editDonation(widget.donation.id, updatedDonation);
