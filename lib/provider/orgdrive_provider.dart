@@ -51,9 +51,11 @@ class OrganizationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void filterOrganizationsByCategory(String category) {
-    _filteredOrgs = _filteredOrgs.where((org) => org.type == category).toList();
+Future<List<Organizations>> filterOrganizationsByCategory(String category) async {
+    List<Organizations> orgs = await OrgApi().filterOrganizationsByCategory(category);
+    _filteredOrgs = orgs;
     notifyListeners();
+    return _filteredOrgs;
   }
 
   Future<void> updateOrganizationStatus(String id, bool newStatus) async{
