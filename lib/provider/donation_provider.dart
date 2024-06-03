@@ -120,6 +120,16 @@ class DonationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cancelDonation(int id) async {
+    try {
+      await donationApi.cancelDonation(id);
+      notifyListeners();
+    }catch (e) {
+      return;
+    }
+    notifyListeners();
+  }
+
   void editDonation(int id, Donation newDonation) async {
     _isLoading = true;
     notifyListeners();
