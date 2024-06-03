@@ -21,13 +21,11 @@ class _AdminScreenState extends State<AdminScreen> {
 
   int _selectedIndex = 0;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Provider.of<DonationProvider>(context, listen: false).fetchDonations();
-  //   Provider.of<OrganizationProvider>(context, listen: false).fetchOrganizations();
-  //   Provider.of<UserAuthProvider>(context, listen: false).fetchAllUsers();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<OrganizationProvider>(context, listen: false).fetchOrganizations();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -75,12 +73,35 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
             ),
             const SizedBox(height: 5),
-            Builder(
-              builder: (context) {
-                final organizationProvider =
-                    Provider.of<OrganizationProvider>(context, listen: false);
-                final List<Organizations> organizations =
-                    organizationProvider.organizations;
+            // Builder(
+            //   builder: (context) {
+            //     final organizationProvider =
+            //         Provider.of<OrganizationProvider>(context, listen: false);
+            //     final List<Organizations> organizations =
+            //         organizationProvider.organizations;
+            //     return ListView.builder(
+            //       shrinkWrap: true,
+            //       physics: NeverScrollableScrollPhysics(),
+            //       itemCount: organizations.length,
+            //       itemBuilder: (context, index) {
+            //         return ExpandableCard(
+            //           title: organizations[index].name,
+            //           description: organizations[index].description,
+            //           onPressed: () {
+            //             Provider.of<AdminProvider>(context, listen: false)
+            //                 .approveOrganizationSignUp(organizations[index]);
+            //           },
+            //         );
+            //       },
+            //     );
+            //   },
+            // ),
+            Consumer<OrganizationProvider>(
+              builder: (context, organizationProvider, child) {
+                if (organizationProvider.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                final List<Organizations> organizations = organizationProvider.organizations;
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
