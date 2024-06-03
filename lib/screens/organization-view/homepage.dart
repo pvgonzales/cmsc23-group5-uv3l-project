@@ -23,7 +23,6 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
   @override
   void initState() {
     super.initState();
-    Provider.of<DonationProvider>(context, listen: false).fetchDonations();
   }
 
   void _onItemTapped(int index) {
@@ -215,7 +214,6 @@ class _HomeScreenOrgState extends State<HomeScreenOrg> {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: donations.length,
                         itemBuilder: (context, index) {
-                          List<Donation> donations = provider.donations;
                           return Card(
                             margin: const EdgeInsets.symmetric(
                               horizontal: 20,
