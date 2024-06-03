@@ -23,7 +23,7 @@ ElGives: Elbi Donation System is a comprehensive mobile application designed to 
     - Administrators also have the ability to view all donor accounts for monitoring and management purposes. <br/>
 
 ## Installation guide
-
+    - To begin, make sure you have an android device to run the flutter app. Turn on developer options and USB debugging on your android device's setting. After that, connect your android device to your laptop/PC through a usb connector. Once the device is connected, choose 'transfer files/photos' once it popped up on your android device's screen. Clone the necessary file for the flutter app on you computer and type 'flutter run' in the terminal. It will automatically connect on your device and the flutter app will then open. 
 
 ## How to use
 **User Registration and Authentication**
