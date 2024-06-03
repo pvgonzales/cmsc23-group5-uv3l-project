@@ -28,6 +28,7 @@ class _DonorFormFormState extends State<DonorForm> {
   String? address;
   String? weight;
   String? phoneNum;
+  String? convertedImage;
 
   final TextEditingController _dateValue = TextEditingController();
   final TextEditingController _timeValue = TextEditingController();
@@ -446,7 +447,11 @@ class _DonorFormFormState extends State<DonorForm> {
                   if (cash!) selectedItems.add('Cash');
                   if (necessities!) selectedItems.add('Necessities');
                   if (others!) selectedItems.add('Others');
-                  String convertedImage = await _convertImage(_imageFile!);
+                  if (_imageFile != null){
+                    convertedImage = await _convertImage(_imageFile!);
+                  }else{
+                    convertedImage = null;
+                  }
                   Donation newDonation = Donation(
                       id: newDonationId,
                       items: selectedItems,
