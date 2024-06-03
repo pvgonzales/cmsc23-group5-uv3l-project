@@ -266,7 +266,7 @@ Future<Widget> decodeBase64ToImage(String base64Image) async {
                   )
                 ],
                 const SizedBox(height: 6.0),
-                if (widget.donation.status != 'Complete') ...[
+                if (widget.donation.status != 'Complete' && widget.donation.status != 'Canceled') ...[
                   if (widget.donation.logistics == 'Pick up') ...[
                     Center(
                       child: Container(
