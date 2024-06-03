@@ -121,6 +121,18 @@ class DonationApi {
     }
   }
 
+  Future<void> cancelDonation(int id) async {
+    try {
+      QuerySnapshot querySnapshot = await donationCollection.where("id", isEqualTo: id).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot document = querySnapshot.docs.first;
+        await donationCollection.doc(document.id).update({"status": 'Canceled'});
+      }
+    } catch (e) {
+      print("Error updating donation status: $e");
+    }
+  }
+
   Future<String> editDonation(int id, Map<String, dynamic> editedDonation) async {
     try {
       QuerySnapshot querySnapshot = await donationCollection.where("id", isEqualTo: id).get();
