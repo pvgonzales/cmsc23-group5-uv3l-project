@@ -27,7 +27,7 @@ class DonorsScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Consumer<UserAuthProvider>(
                 builder: (context, userProvider, _) {
-                  final List<UserModel> donors = userProvider.donors;
+                  final List<UserModel> donors = userProvider.users;
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,

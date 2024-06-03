@@ -287,7 +287,7 @@ class _DetailsFormFormState extends State<DetailsForm> {
                       address!,
                       usertype,
                       convertedImage,
-                      orgdesc!,
+                      orgdesc,
                       orgtype
                     );
                   Navigator.pushNamed(context, '/sign-in');
