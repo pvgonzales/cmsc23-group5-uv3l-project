@@ -385,10 +385,14 @@ class _ExpandableCardState extends State<ExpandableCard> {
           if (_expanded)
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
+              child: widget.organization.approved == false ? ElevatedButton(
                 onPressed: () {
                   Provider.of<AdminProvider>(context, listen: false)
                       .approveOrganizationSignUp(widget.organization);
+                  setState(() {
+                    _expanded = false;
+                    widget.organization.approved = true;
+                  });
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
@@ -404,7 +408,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
                     fontSize: 14,
                   ),
                 ),
-              ),
+              ) : Container(),
             ),
         ],
       ),
