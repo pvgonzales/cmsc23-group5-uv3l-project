@@ -99,7 +99,7 @@ Future<List<Organizations>> fetchApprovedOrganizations() async {
   Future<void> updateOrganizationStatus(String id, bool status) async {
     try {
       await orgCollection.doc(id).update({
-        "status": status
+        "approved": status
       });
     } catch (e) {
       print("Error updating organization status: $e");

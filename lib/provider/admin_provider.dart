@@ -20,7 +20,7 @@ class AdminProvider extends ChangeNotifier {
   void approveOrganizationSignUp(Organizations organization) async {
     int index = _organizationProvider.organizations
         .indexWhere((org) => org.uid == organization.uid);
-    _organizationProvider.organizations[index].status = true;
+    _organizationProvider.organizations[index].approved = true;
     notifyListeners();
 
     try {
