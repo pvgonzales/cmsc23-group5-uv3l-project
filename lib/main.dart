@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(create: (context) => OrganizationProvider()),
           ChangeNotifierProvider(create: (context) => DonationDriveProvider()),
-          ChangeNotifierProvider(
-            create: (_) => AdminProvider(
+          ChangeNotifierProvider<AdminProvider>(
+            create: (context) => AdminProvider(
               Provider.of<OrganizationProvider>(context, listen: false),
               Provider.of<DonationProvider>(context, listen: false),
             ),
@@ -111,7 +111,8 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) => const OrgSignUpScreen());
             } else if (setting.name == '/org-profile') {
-              return MaterialPageRoute(builder: (context) => const OrgProfile());
+              return MaterialPageRoute(
+                  builder: (context) => const OrgProfile());
             } else if (setting.name == '/admin-donation') {
               return MaterialPageRoute(
                   builder: (context) => DonationScreenAdmin());

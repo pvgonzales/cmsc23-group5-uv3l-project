@@ -386,7 +386,10 @@ class _ExpandableCardState extends State<ExpandableCard> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: widget.onPressed,
+                onPressed: () {
+                  Provider.of<AdminProvider>(context, listen: false)
+                      .approveOrganizationSignUp(widget.organization);
+                },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
                     Color(0xFF212738), // Change button color here
