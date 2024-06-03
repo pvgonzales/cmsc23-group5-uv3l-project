@@ -13,7 +13,6 @@ import 'package:flutter_project/screens/donations/donation.dart';
 import 'package:flutter_project/screens/home/home.dart';
 import 'package:flutter_project/screens/intro-screen/intro.dart';
 import 'package:flutter_project/screens/organization-view/donationdrives.dart';
-import 'package:flutter_project/screens/organization-view/donations.dart';
 import 'package:flutter_project/screens/organization-view/homepage.dart';
 import 'package:flutter_project/screens/organization-details/orgdetails.dart';
 import 'package:flutter_project/screens/organization-view/orgprofile.dart';
@@ -65,7 +64,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             useMaterial3: true,
           ),
-          initialRoute: '/home',
+          initialRoute: '/',
           onGenerateRoute: (setting) {
             if (setting.name == '/') {
               return MaterialPageRoute(
@@ -112,7 +111,7 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (context) => const OrgSignUpScreen());
             } else if (setting.name == '/org-profile') {
-              return MaterialPageRoute(builder: (context) => OrgProfile());
+              return MaterialPageRoute(builder: (context) => const OrgProfile());
             } else if (setting.name == '/admin-donation') {
               return MaterialPageRoute(
                   builder: (context) => DonationScreenAdmin());

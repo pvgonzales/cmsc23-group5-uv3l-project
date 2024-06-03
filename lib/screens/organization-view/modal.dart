@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donationdrive_model.dart';
 import 'package:flutter_project/model/org_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:flutter_project/provider/orgdrive_provider.dart';
 import 'package:provider/provider.dart';
@@ -77,14 +78,24 @@ class _DriveModalState extends State<DriveModal> {
           ),
         );
       default:
-        return const Text("");
+        return const Text(
+          "View Donation Drive",
+          style: TextStyle(
+            fontFamily: "MyFont1",
+            color: Color(0xFF212738),
+            fontWeight: FontWeight.w900,
+            fontSize: 16,
+          ),
+        );
     }
   }
 
   // Method to build the content or body depending on the functionality
   Widget _buildContent(BuildContext context) {
-    List<Organizations> orgdrivesItems =
-        context.read<OrganizationProvider>().orgdrives;
+    List<Organizations> organizations =
+        context.read<OrganizationProvider>().organizations;
+    List<DonationDrive> orgdrivesItems =
+          context.read<DonationDriveProvider>().orgdrives;
     switch (widget.type) {
       case 'Delete':
         {
@@ -95,6 +106,35 @@ class _DriveModalState extends State<DriveModal> {
               color: Color(0xFF212738),
               fontWeight: FontWeight.w500,
               fontSize: 14,
+            ),
+          );
+        }
+      case 'View':
+        {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  "Name: ${orgdrivesItems[widget.index].name}",
+                  style: const TextStyle(
+                    fontFamily: "MyFont1",
+                    color: Color(0xFF212738),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(
+                  child: Text(
+                    "Description: ${orgdrivesItems[widget.index].description}",
+                    style: const TextStyle(
+                      fontFamily: "MyFont1",
+                      color: Color(0xFF212738),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  )
+                )
+              ],
             ),
           );
         }
@@ -116,13 +156,13 @@ class _DriveModalState extends State<DriveModal> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 2,
                     ),
                     TextField(
                       controller: _formFieldName,
-                      style: TextStyle(
-                        color: const Color.fromARGB(
+                      style: const TextStyle(
+                        color: Color.fromARGB(
                             255, 255, 255, 255), // Text color of the input
                         fontSize: 14,
                         fontFamily: "MyFont1",
@@ -131,17 +171,17 @@ class _DriveModalState extends State<DriveModal> {
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         hintText: widget.index != -1
-                            ? orgdrivesItems[widget.index].name
+                            ? organizations[widget.index].name
                             : '',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                             fontFamily: "MyFont1",
                             fontStyle: FontStyle.italic),
-                        fillColor: Color(0xFF212738),
+                        fillColor: const Color(0xFF212738),
                         filled: true,
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                           const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                       ),
                     ),
                   ],
@@ -163,8 +203,8 @@ class _DriveModalState extends State<DriveModal> {
                       ),
                     ),
                     TextField(
-                      style: TextStyle(
-                        color: const Color.fromARGB(
+                      style: const TextStyle(
+                        color: Color.fromARGB(
                             255, 255, 255, 255), // Text color of the input
                         fontSize: 14,
                         fontFamily: "MyFont1",
@@ -174,17 +214,17 @@ class _DriveModalState extends State<DriveModal> {
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         hintText: widget.index != -1
-                            ? orgdrivesItems[widget.index].description
+                            ? organizations[widget.index].description
                             : '',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                             fontFamily: "MyFont1",
                             fontStyle: FontStyle.italic),
-                        fillColor: Color(0xFF212738),
+                        fillColor: const Color(0xFF212738),
                         filled: true,
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                            const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                       ),
                     ),
                   ],
@@ -202,13 +242,14 @@ class _DriveModalState extends State<DriveModal> {
 
     return TextButton(
       onPressed: () {
+        String? org = context.read<UserAuthProvider>().currentUsername;
         switch (widget.type) {
           case 'Add':
             {
               DonationDrive newDonationDrive = DonationDrive(
-                  id: 4,
                   name: _formFieldName.text,
-                  description: _formFieldDesc.text);
+                  description: _formFieldDesc.text,
+                  org: org!);
 
               context.read<DonationDriveProvider>().addDrive(newDonationDrive);
 
@@ -219,9 +260,10 @@ class _DriveModalState extends State<DriveModal> {
           case 'Edit':
             {
               DonationDrive info = DonationDrive(
-                id: 1,
+                id: orgdrivesItems[widget.index].id,
                 name: _formFieldName.text,
                 description: _formFieldDesc.text,
+                org: orgdrivesItems[widget.index].org,
               );
               context
                   .read<DonationDriveProvider>()
@@ -235,20 +277,19 @@ class _DriveModalState extends State<DriveModal> {
             {
               context
                   .read<DonationDriveProvider>()
-                  .deleteDrive(orgdrivesItems[widget.index].id);
-              // Remove dialog after editing
+                  .deleteDrive(orgdrivesItems[widget.index].id.toString());
               Navigator.of(context).pop();
               break;
             }
         }
       },
       style: TextButton.styleFrom(
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
         fontFamily: "MyFont1",
         fontWeight: FontWeight.w900,
         fontSize: 16,
       )),
-      child: Text(widget.type),
+      child: widget.type == 'View' ? const Text('') : Text(widget.type),
     );
   }
 

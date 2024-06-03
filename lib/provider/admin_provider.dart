@@ -10,7 +10,7 @@ class AdminProvider extends ChangeNotifier {
 
   AdminProvider(this._organizationProvider, this._donationProvider);
 
-  List<Organizations> get organizations => _organizationProvider.orgdrives;
+  List<Organizations> get organizations => _organizationProvider.organizations;
   List<Donation> get donations => _donationProvider.donations;
 
   // Add methods for approving organization sign up

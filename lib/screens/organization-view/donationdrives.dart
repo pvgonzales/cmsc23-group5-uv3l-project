@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donationdrive_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donationdrive_provider.dart';
 import 'package:flutter_project/screens/organization-view/modal.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,20 @@ class DonationDriveScreen extends StatefulWidget {
 
 class _DonationDriveScreenState extends State<DonationDriveScreen> {
   int _selectedIndex = 0;
+  final bool _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      final userProvider = Provider.of<UserAuthProvider>(context, listen: false);
+      final donationDriveProvider = Provider.of<DonationDriveProvider>(context, listen: false);
+      String? orgName = userProvider.currentUsername;
+      if (orgName != null) {
+        donationDriveProvider.fetchCurrentOrgDrives(orgName);
+      }
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -95,6 +110,7 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
             children: [
               Consumer<DonationDriveProvider>(
                 builder: (context, provider, child) {
+                  didChangeDependencies();
                   List<DonationDrive> donationsdrives = provider.orgdrives;
                   return ListView.builder(
                     shrinkWrap: true,
@@ -145,6 +161,17 @@ class _DonationDriveScreenState extends State<DonationDriveScreen> {
                                   );
                                 },
                                 icon: const Icon(Icons.delete_outlined),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        DriveModal(
+                                            type: 'View', index: index),
+                                  );
+                                },
+                                icon: const Icon(Icons.remove_red_eye_rounded),
                               ),
                             ],
                           ),

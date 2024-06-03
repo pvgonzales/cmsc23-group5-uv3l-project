@@ -71,13 +71,74 @@ class DonationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editDropOffStatus(int id, String status) {
-    for (var donation in donations) {
+  Future<void> fetchCurrentUserDonations(String username) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      List<Donation> fetchedDonations = await donationApi.fetchDonationsByUsername(username);
+      _donations = fetchedDonations;
+    } catch (e) {
+      print(e);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchDonationsByOrganizationName(String username) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      List<Donation> fetchedDonations = await donationApi.fetchDonationsByOrganization(username);
+      _donations = fetchedDonations;
+    } catch (e) {
+      print(e);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Donation? findDonationById(String id) {
+    for (var donation in _donations) {
       if (donation.id == id) {
-        donation.status = status;
-        notifyListeners();
-        break;
+        return donation;
       }
     }
+    return null;
+  }
+
+  void editDropOffStatus(int id, String status) async {
+    try {
+      await donationApi.editDropOffStatus(id, status);
+      notifyListeners();
+    }catch (e) {
+      return;
+    }
+    notifyListeners();
+  }
+
+  void cancelDonation(int id) async {
+    try {
+      await donationApi.cancelDonation(id);
+      notifyListeners();
+    }catch (e) {
+      return;
+    }
+    notifyListeners();
+  }
+
+  void editDonation(int id, Donation newDonation) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await donationApi.editDonation(id, newDonation.toJson(newDonation));
+    } catch (e) {
+      return;
+    }
+    _isLoading = false;
+    notifyListeners();
   }
 }

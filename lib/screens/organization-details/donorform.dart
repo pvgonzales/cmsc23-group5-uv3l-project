@@ -1,13 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DonorForm extends StatefulWidget {
-  const DonorForm({super.key});
+  final String orgusername;
+  const DonorForm({super.key, required this.orgusername});
 
   @override
   _DonorFormFormState createState() => _DonorFormFormState();
@@ -82,8 +85,20 @@ class _DonorFormFormState extends State<DonorForm> {
     }
   }
 
+  Future<String> _convertImage(XFile image) async {
+    try {
+      final bytes = await image.readAsBytes();
+      String base64Image = base64Encode(bytes);
+      return (base64Image);
+    } catch (e) {
+      return '$e';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final UserAuthProvider userProvider = 
+        Provider.of<UserAuthProvider>(context);
     final DonationProvider donationProvider =
         Provider.of<DonationProvider>(context);
     return Container(
@@ -421,7 +436,7 @@ class _DonorFormFormState extends State<DonorForm> {
                 : Container(),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   int newDonationId = DateTime.now().millisecondsSinceEpoch;
@@ -431,6 +446,7 @@ class _DonorFormFormState extends State<DonorForm> {
                   if (cash!) selectedItems.add('Cash');
                   if (necessities!) selectedItems.add('Necessities');
                   if (others!) selectedItems.add('Others');
+                  String convertedImage = await _convertImage(_imageFile!);
                   Donation newDonation = Donation(
                       id: newDonationId,
                       items: selectedItems,
@@ -439,8 +455,10 @@ class _DonorFormFormState extends State<DonorForm> {
                       phoneNum: logistics == 'Pick up' ? phoneNum : null,
                       date: _dateValue.text,
                       time: _timeValue.text,
-                      proof: _imageFile,
-                      status: "Pending");
+                      proof: convertedImage,
+                      status: "Pending",
+                      donor: userProvider.currentUsername,
+                      org: widget.orgusername);
                   // var donationProvider =
                   //     Provider.of<DonationProvider>(context, listen: false);
                   donationProvider.addDonation(newDonation);

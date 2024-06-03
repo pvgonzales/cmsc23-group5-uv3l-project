@@ -66,7 +66,7 @@ class OrgLoginScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 40),
                         SignInForm(
-                          destinationRoute: '/org-home-page',
+                          destinationRoute: '/org-home-page', expectedUserType: 'organization',
                         ),
                         const SizedBox(height: 20),
                         Row(

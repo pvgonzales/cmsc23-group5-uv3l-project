@@ -3,8 +3,8 @@ import 'package:flutter_project/model/org_model.dart';
 import 'package:flutter_project/screens/organization-details/donorform.dart';
 
 class OrgDonation extends StatefulWidget {
-  final Organizations? org;
-  const OrgDonation({super.key, this.org});
+  final Organizations org;
+  const OrgDonation({super.key, required this.org});
 
   @override
   State<OrgDonation> createState() => _OrgDonationState();
@@ -54,7 +54,7 @@ class _OrgDonationState extends State<OrgDonation> {
                       borderRadius: BorderRadius.circular(20),
                       color: Color.fromARGB(173, 255, 229, 228),
                     ),
-                    child: Text("Donate to ${widget.org!.name}",
+                    child: Text("Donate to ${widget.org.name}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 18,
@@ -65,7 +65,7 @@ class _OrgDonationState extends State<OrgDonation> {
                         )),
                   ),
                   const SizedBox(height: 16),
-                  const DonorForm(),
+                  DonorForm(orgusername: widget.org.username),
                   const SizedBox(height: 30),
                 ],
               ),

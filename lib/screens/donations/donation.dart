@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
+import 'package:flutter_project/provider/auth_provider.dart';
 import 'package:flutter_project/provider/donation_provider.dart';
-import 'package:flutter_project/screens/donations/showqr.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -11,9 +13,14 @@ class DonationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserAuthProvider userProvider =
+        Provider.of<UserAuthProvider>(context, listen: false);
     final DonationProvider donationProvider =
         Provider.of<DonationProvider>(context, listen: false);
-    donationProvider.fetchDonations();
+
+    String? username = userProvider.currentUsername;
+    donationProvider.fetchCurrentUserDonations(username!);
+    
     return Scaffold(
       backgroundColor: Color(0xfff4f6ff),
       body: Column(
@@ -70,6 +77,17 @@ class DonationCard extends StatelessWidget {
   final Donation donation;
   const DonationCard({Key? key, required this.donation}) : super(key: key);
 
+  Future<Widget> decodeBase64ToImage(String base64Image) async {
+  try {
+    Uint8List decodedBytes = base64Decode(base64Image);
+    Image image = Image.memory(decodedBytes);
+    
+    return image;
+  } catch (e) {
+    throw Exception("Error decoding base64 to Image: $e");
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     final TextStyle labelTextStyle = TextStyle(
@@ -98,6 +116,7 @@ class DonationCard extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
+                  scrollable: true,
                   backgroundColor: Colors.white,
                   contentPadding: EdgeInsets.only(
                       left: 26.0, right: 25, top: 20, bottom: 20),
@@ -144,6 +163,19 @@ class DonationCard extends StatelessWidget {
                       ),
                       SizedBox(
                         height: 16,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Dontate to:',
+                            style: labelTextStyle,
+                          ),
+                          Text(
+                            '${donation.org}',
+                            style: valueTextStyle,
+                          ),
+                        ],
                       ),
                       Container(
                         padding: EdgeInsets.all(0),
@@ -239,11 +271,6 @@ class DonationCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (donation.proof != null)
-                        Image.file(
-                          File(donation.proof!.path),
-                          height: 200,
-                        ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -257,14 +284,35 @@ class DonationCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      if (donation.proof != null)...[
+                        Text('Proof of Donation', style: labelTextStyle,),
+                        const SizedBox(height: 10,),
+                        Center(
+                          child: FutureBuilder<Widget>(
+                            future: decodeBase64ToImage(donation.proof!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                return SizedBox(
+                                  height: 150,
+                                  child: snapshot.data,
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                      const SizedBox(
                         height: 0,
                       ),
-                      if (donation.logistics == 'Drop-off')
+                      if (donation.logistics == 'Drop-off' && donation.status == 'Pending')
                         (Column(children: [
                           QrImageView(
                             data:
-                                "${donation.id}\n${donation.items.join(', ')}\n${donation.address}\n${donation.phoneNum}\n${donation.date}\n${donation.time}\n${donation.status}",
+                                "${donation.id}",
                             version: QrVersions.auto,
                             size: 140.0,
                           ),
@@ -276,21 +324,69 @@ class DonationCard extends StatelessWidget {
                   ),
                   actions: [
                     Center(
-                      child: Container(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            'Close',
-                            style: TextStyle(
-                              fontFamily: "MyFont1",
-                              color: Color(
-                                  0xFF212738), // Adjust text color as needed
-                              fontWeight: FontWeight.w500,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          if(donation.status != 'Canceled' && donation.status == 'Pending')...[
+                            TextButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text("Cancel Donation"),
+                                      content: const Text("Are you sure you want to cancel this donation?"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Provider.of<DonationProvider>(context, listen: false)
+                                              .cancelDonation(donation.id);
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop(); 
+                                            ScaffoldMessenger.of(context)
+                                              ..removeCurrentSnackBar()
+                                              ..showSnackBar(
+                                                const SnackBar(content: Text('Donation Canceled')),
+                                              );
+                                          },
+                                          child: Text("Yes"),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); // Close the dialog
+                                          },
+                                          child: const Text("No"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontFamily: "MyFont1",
+                                  color: Color.fromARGB(255, 194, 23, 23), // Adjust text color as needed
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            )
+                          ],
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Close',
+                              style: TextStyle(
+                                fontFamily: "MyFont1",
+                                color: Color(
+                                    0xFF212738), // Adjust text color as needed
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
+                        ]
                       ),
                     )
                   ],
