@@ -174,148 +174,183 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHomeContent(List<Organizations> organizations) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: double.infinity,
-          margin: const EdgeInsets.only(
-              left: 10,
-              right: 10,
-              top: 0,
-              bottom: 16), // Adjust the top margin here
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(82, 255, 207, 205),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: const Text.rich(
-            TextSpan(
-              style: TextStyle(
-                color: Color(0xFF212738),
-                fontFamily: "MyFont1",
+
+    void updateFilteredOrgs(List<Organizations> orgs) {
+      setState(() {
+        organizations = orgs;
+      });
+    }
+
+    return Consumer<OrganizationProvider>(
+      builder: (context, provider, _) {
+        List<Map<String, dynamic>> categories = [
+          {"icon": "assets/images/home1.png", "text": "Non-Profit", "type": "Non-Profit"},
+          {"icon": "assets/images/home2.png", "text": "Religious", "type": "Religious"},
+          {"icon": "assets/images/home3.png", "text": "Academic", "type": "Academic"},
+          {"icon": "assets/images/home4.png", "text": "Health", "type": "Health"},
+          {"icon": "assets/images/home5.png", "text": "Others", "type": "Others"},
+        ];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  top: 0,
+                  bottom: 16), // Adjust the top margin here
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
               ),
-              children: [
-                TextSpan(text: "Empower Change:\n"),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(82, 255, 207, 205),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text.rich(
                 TextSpan(
-                  text: "Donate Today, Transform Tomorrow!",
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF212738),
+                    fontFamily: "MyFont1",
                   ),
+                  children: [
+                    TextSpan(text: "Empower Change:\n"),
+                    TextSpan(
+                      text: "Donate Today, Transform Tomorrow!",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(left: 10),
-          child: const Row(
-            children: [
-              Text(
-                "Categories",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: "MyFont3",
-                  color: Color(0xFF212738),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const OrgCategories(),
-        const SizedBox(
-          height: 10,
-        ),
-        Container(
-          margin: const EdgeInsets.only(left: 10),
-          child: const Row(
-            children: [
-              Text(
-                "Top Organizations",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: "MyFont3",
-                  color: Color(0xFF212738),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: organizations.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(10),
-                child: Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
+            Container(
+              margin: const EdgeInsets.only(left: 10),
+              child: const Row(
+                children: [
+                  Text(
+                    "Categories",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "MyFont3",
+                      color: Color(0xFF212738),
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      ClipRRect(
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                  categories.length,
+                  (index) => CategoryCard(
+                    icon: categories[index]["icon"],
+                    text: categories[index]["text"],
+                    press: () async {
+                      String selectedType = categories[index]["type"];
+                      organizations = await provider.filterOrganizationsByCategory(selectedType);
+                    },
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 10),
+              child: const Row(
+                children: [
+                  Text(
+                    "Top Organizations",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "MyFont3",
+                      color: Color(0xFF212738),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: organizations.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      height: 100,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        child: Center(
-                        child: FutureBuilder<Widget>(
-                          future: decodeBase64ToImage(organizations[index].image),
-                          builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else {
-                                return SizedBox(
-                                  height: 150,
-                                  child: snapshot.data,
-                                );
-                              }
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Center(
+                            child: FutureBuilder<Widget>(
+                              future: decodeBase64ToImage(organizations[index].image),
+                              builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    return SizedBox(
+                                      height: 150,
+                                      child: snapshot.data,
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              organizations[index].name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontFamily: "MyFont1",
+                                fontWeight: FontWeight.w400,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              var res = await Navigator.pushNamed(
+                                  context, '/org-details',
+                                  arguments: organizations[index]);
+                              ScaffoldMessenger.of(context)
+                                ..removeCurrentSnackBar()
+                                ..showSnackBar(
+                                    SnackBar(content: Text(res as String)));
                             },
-                          ),
-                        ),
+                            icon: const Icon(Icons.arrow_right),
+                          )
+                        ],
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          organizations[index].name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: "MyFont1",
-                            fontWeight: FontWeight.w400,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          var res = await Navigator.pushNamed(
-                              context, '/org-details',
-                              arguments: organizations[index]);
-                          ScaffoldMessenger.of(context)
-                            ..removeCurrentSnackBar()
-                            ..showSnackBar(
-                                SnackBar(content: Text(res as String)));
-                        },
-                        icon: const Icon(Icons.arrow_right),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        )
-      ],
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        );
+      }
     );
   }
 }
