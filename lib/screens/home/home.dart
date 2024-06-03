@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final OrganizationProvider organizationProvider =
     Provider.of<OrganizationProvider>(context, listen: false);
     return FutureBuilder(
-      future: organizationProvider.fetchOrganizations(),
+      future: organizationProvider.fetchApprovedOrganizations(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
         return Center(child: CircularProgressIndicator());
