@@ -61,6 +61,7 @@ class UserAuthProvider with ChangeNotifier {
         username: data["username"],
         phoneNumber: data["contact"],
         address: data["address"],
+        usertype: data["usertype"], // Include the usertype field
       );
     }
   }
@@ -92,6 +93,8 @@ class UserAuthProvider with ChangeNotifier {
             username: userData["username"],
             phoneNumber: userData["contact"],
             address: userData["address"],
+            usertype: userData["usertype"],
+            photo: userData["photo"],
           );
           _users.add(user); // Add the user to the list
         }
@@ -104,7 +107,10 @@ class UserAuthProvider with ChangeNotifier {
 
   Future<void> fetchAllDonors() async {
     try {
-      final donorsSnapshot = await _firestore.collection("users").where("usertype", isEqualTo: "donor").get();
+      final donorsSnapshot = await _firestore
+          .collection("users")
+          .where("usertype", isEqualTo: "donor")
+          .get();
       _donors.clear(); // Clear the existing list before adding new donors
       donorsSnapshot.docs.forEach((donorDoc) {
         final donorData = donorDoc.data();
@@ -116,6 +122,8 @@ class UserAuthProvider with ChangeNotifier {
             username: donorData["username"],
             phoneNumber: donorData["contact"],
             address: donorData["address"],
+            usertype: donorData["usertype"],
+            photo: donorData["photo"],
           );
           _donors.add(donor); // Add the donor to the list
         }

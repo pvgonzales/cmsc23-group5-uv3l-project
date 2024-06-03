@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project/model/donation_model.dart';
 import 'package:flutter_project/model/org_model.dart';
@@ -24,7 +27,8 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<OrganizationProvider>(context, listen: false).fetchOrganizations();
+    Provider.of<OrganizationProvider>(context, listen: false)
+        .fetchOrganizations();
   }
 
   void _onItemTapped(int index) {
@@ -101,15 +105,15 @@ class _AdminScreenState extends State<AdminScreen> {
                 if (organizationProvider.isLoading) {
                   return Center(child: CircularProgressIndicator());
                 }
-                final List<Organizations> organizations = organizationProvider.organizations;
+                final List<Organizations> organizations =
+                    organizationProvider.organizations;
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: organizations.length,
                   itemBuilder: (context, index) {
                     return ExpandableCard(
-                      title: organizations[index].name,
-                      description: organizations[index].description,
+                      organization: organizations[index],
                       onPressed: () {
                         Provider.of<AdminProvider>(context, listen: false)
                             .approveOrganizationSignUp(organizations[index]);
@@ -297,14 +301,12 @@ class CategoryCard extends StatelessWidget {
 }
 
 class ExpandableCard extends StatefulWidget {
-  final String title;
-  final String description;
+  final Organizations organization;
   final VoidCallback onPressed;
 
   const ExpandableCard({
     Key? key,
-    required this.title,
-    required this.description,
+    required this.organization,
     required this.onPressed,
   }) : super(key: key);
 
@@ -317,6 +319,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
   @override
   Widget build(BuildContext context) {
+    Uint8List imageBytes = base64.decode(widget.organization.image);
     return Card(
       color: Color.fromARGB(255, 238, 243, 251),
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 11),
@@ -324,14 +327,14 @@ class _ExpandableCardState extends State<ExpandableCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(15), // Add padding to the image
+            padding: EdgeInsets.all(15),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), // Add border radius
+              borderRadius: BorderRadius.circular(10),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10), // Add border radius
-              child: Image.asset(
-                "assets/images/org1.jpg",
+              borderRadius: BorderRadius.circular(10),
+              child: Image.memory(
+                imageBytes,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: 150,
@@ -351,7 +354,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.title,
+                      widget.organization.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -370,7 +373,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                widget.description,
+                widget.organization.description,
                 style: TextStyle(
                     fontFamily: "MyFont1",
                     color: Color(0xFF212738),
@@ -383,7 +386,10 @@ class _ExpandableCardState extends State<ExpandableCard> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: widget.onPressed,
+                onPressed: () {
+                  Provider.of<AdminProvider>(context, listen: false)
+                      .approveOrganizationSignUp(widget.organization);
+                },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
                     Color(0xFF212738), // Change button color here
