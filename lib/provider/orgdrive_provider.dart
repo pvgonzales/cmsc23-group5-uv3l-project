@@ -24,6 +24,16 @@ class OrganizationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> fetchApprovedOrganizations() async {
+    _isLoading = true;
+    notifyListeners();
+
+    List<Organizations> orgs = await OrgApi().fetchApprovedOrganizations();
+    _filteredOrgs = orgs;
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> fetchOrganizationByUsername(String username) async {
     _isLoading = true;
     notifyListeners();
