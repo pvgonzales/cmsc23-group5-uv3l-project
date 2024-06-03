@@ -106,4 +106,35 @@ Future<List<Organizations>> fetchApprovedOrganizations() async {
     }
   }
 
+  Future<List<Organizations>> filterOrganizationsByCategory(String category) async {
+  try {
+    QuerySnapshot snapshot = await orgCollection.get();
+
+    // Filtering approved organizations and mapping to Organizations objects
+    List<Organizations> approvedOrganizations = snapshot.docs
+        .where((doc) => doc['approved'] == true && doc['status'] == true && doc['orgtype'] == category)
+        .map((doc) {
+          return Organizations(
+            uid: doc['uid'],
+            email: doc['email'],
+            name: doc['name'],
+            username: doc['username'],
+            address: doc['address'],
+            contact: doc['contact'],
+            approved: doc['approved'],
+            description: doc['description'],
+            image: doc['photo'],
+            status: doc['status'],
+            type: doc['orgtype'],
+          );
+        })
+        .toList();
+
+    return approvedOrganizations;
+  } catch (e) {
+    print(e);
+    return [];
+  }
+}
+
 }
