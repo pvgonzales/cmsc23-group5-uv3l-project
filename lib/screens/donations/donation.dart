@@ -116,6 +116,7 @@ class DonationCard extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
+                  scrollable: true,
                   backgroundColor: Colors.white,
                   contentPadding: EdgeInsets.only(
                       left: 26.0, right: 25, top: 20, bottom: 20),
@@ -307,7 +308,7 @@ class DonationCard extends StatelessWidget {
                       const SizedBox(
                         height: 0,
                       ),
-                      if (donation.logistics == 'Drop-off')
+                      if (donation.logistics == 'Drop-off' && donation.status == 'Pending')
                         (Column(children: [
                           QrImageView(
                             data:
@@ -323,21 +324,69 @@ class DonationCard extends StatelessWidget {
                   ),
                   actions: [
                     Center(
-                      child: Container(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            'Close',
-                            style: TextStyle(
-                              fontFamily: "MyFont1",
-                              color: Color(
-                                  0xFF212738), // Adjust text color as needed
-                              fontWeight: FontWeight.w500,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          if(donation.status != 'Canceled' && donation.status == 'Pending')...[
+                            TextButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text("Cancel Donation"),
+                                      content: const Text("Are you sure you want to cancel this donation?"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Provider.of<DonationProvider>(context, listen: false)
+                                              .cancelDonation(donation.id);
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop(); 
+                                            ScaffoldMessenger.of(context)
+                                              ..removeCurrentSnackBar()
+                                              ..showSnackBar(
+                                                const SnackBar(content: Text('Donation Canceled')),
+                                              );
+                                          },
+                                          child: Text("Yes"),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); // Close the dialog
+                                          },
+                                          child: const Text("No"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontFamily: "MyFont1",
+                                  color: Color.fromARGB(255, 194, 23, 23), // Adjust text color as needed
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            )
+                          ],
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Close',
+                              style: TextStyle(
+                                fontFamily: "MyFont1",
+                                color: Color(
+                                    0xFF212738), // Adjust text color as needed
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
+                        ]
                       ),
                     )
                   ],
